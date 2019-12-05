@@ -7,9 +7,15 @@
       class="elevation-0"
     >
       <div class="header" >
+        <v-btn style="width:24px;height:24px" @click="$router.go(-1)" text icon>
+        <v-icon color="white" >mdi-arrow-left</v-icon>
+        </v-btn>
         <v-spacer></v-spacer>
-        <v-toolbar-title class="toolbar-title">DASHBOARD</v-toolbar-title>
+        <v-toolbar-title class="toolbar-title">DATA KEPEMILIKAN</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-btn style="width:24px;height:24px" @click="$router.push({ name : 'main'})" text icon>
+        <v-icon color="white">mdi-home</v-icon>
+        </v-btn>
         <!-- <img :src="require('@/assets/logo.svg')" class="photo-profile"/> -->
       </div>
     </v-app-bar>
@@ -17,33 +23,6 @@
         <v-container class="fill-height" fluid >
                <router-view></router-view>
         </v-container>
-    </div>
-    <div class="nav-bottom">
-      <v-bottom-navigation
-        :value="activeBtn"
-        grow
-        color="white"
-        background-color="#3A4D8C"
-        class="elevation-0"
-        dark
-        fixed
-        style="max-width: 480px;left:unset"
-      >
-        <v-btn active-class="v-btn--active">
-          <span>Home</span>
-          <v-icon>mdi-home</v-icon>
-        </v-btn>
-
-        <v-btn>
-          <span>Maps</span>
-          <v-icon>mdi-google-maps</v-icon>
-        </v-btn>
-
-        <v-btn>
-          <span>Profile</span>
-          <v-icon>mdi-account</v-icon>
-        </v-btn>
-      </v-bottom-navigation>
     </div>
   </div>
 </template>

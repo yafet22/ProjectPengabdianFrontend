@@ -10,6 +10,15 @@ function loadView(view) {
   return () => import(/* webpackChunkName: "view-[request]" */ `../views/${view}.vue`)
 }
 
+function mainView(view) {
+  return () => import(/* webpackChunkName: "view-[request]" */ `../views/MainLayout/${view}.vue`)
+}
+
+function formView(view) {
+  return () => import(/* webpackChunkName: "view-[request]" */ `../views/Form/${view}.vue`)
+}
+
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -31,10 +40,63 @@ const routes = [
         name: 'main',
         path: '',
         meta: { requiresAuth: true },
-        component: loadView('Main')
+        component: mainView('Main')
       }
     ]
-  }
+  },
+  {
+    path: '/input',
+    component: loadView('FormLayout'),
+    children: [
+      {
+        name: 'ownerForm',
+        path: 'owner',
+        meta: { requiresAuth: true },
+        component: formView('OwnerForm')
+      },
+      {
+        name: 'livestockForm',
+        path: 'owner/livestock/:id',
+        meta: { requiresAuth: true },
+        component: formView('LivestockForm')
+      },
+      {
+        name: 'livestockFormEdit',
+        path: 'owner/livestock/:id/:livestock',
+        meta: { requiresAuth: true },
+        component: formView('LivestockForm')
+      },
+      {
+        name: 'landForm',
+        path: 'owner/land/:id',
+        meta: { requiresAuth: true },
+        component: formView('LandForm')
+      },
+      {
+        name: 'landFormEdit',
+        path: 'owner/land/:id/:land',
+        meta: { requiresAuth: true },
+        component: formView('LandForm')
+      },
+      {
+        name: 'houseForm',
+        path: 'owner/house/:id',
+        meta: { requiresAuth: true },
+        component: formView('HouseForm')
+      },
+      {
+        name: 'houseFormEdit',
+        path: 'owner/house/:id/:house',
+        meta: { requiresAuth: true },
+        component: formView('HouseForm')
+      },
+    ]
+  },
+  {
+    path: '/owner/:id',
+    name: 'ownerDetail',
+    component: loadView('OwnerDetail')
+  },
 ]
 
 const router = new VueRouter({

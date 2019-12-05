@@ -38,7 +38,7 @@
                     LOGIN
                 </v-btn>
                 <div class="text-center" id="message">
-                    <span>Belum Mempunyai Akun? <a>Sign Up</a></span>
+                    <span>Belum Mempunyai Akun?<router-link :to="{name: 'register'}" style="text-decoration: none">Sign Up</router-link></span>
                 </div>
               </div>
            </v-row> 
@@ -71,7 +71,7 @@ export default {
            username : null,
            password : null,
            client_id : 2,
-           client_secret : "zJtx0VQwnRgplW9Pu6OzyBo5txVmEI8c23knUY1l",
+           client_secret : "kNIZ3gxtDFIsfialH37QVGImNUQWHp6bEAQdytJV",
            grant_type : "password"
        }, 
        snackbar: false, 

@@ -46,7 +46,7 @@
                     SIGN UP
                 </v-btn>
                 <div class="text-center" id="message">
-                    <span>Sudah Punya Akun? <a>Login</a></span>
+                    <span>Sudah Punya Akun?<router-link :to="{name: 'login'}" style="text-decoration: none">Login</router-link></span>
                 </div>
               </div>
            </v-row> 
