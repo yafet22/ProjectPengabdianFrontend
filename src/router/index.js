@@ -41,7 +41,25 @@ const routes = [
         path: '',
         meta: { requiresAuth: true },
         component: mainView('Main')
-      }
+      },
+      {
+        path: '/public',
+        name: 'public',
+        meta: { requiresAuth: true },
+        component: mainView('Public')
+      },
+      {
+        path: '/maps',
+        name: 'maps',
+        meta: { requiresAuth: true },
+        component: mainView('Maps')
+      },
+      {
+        path: '/profile',
+        name: 'profile',
+        meta: { requiresAuth: true },
+        component: mainView('Profile')
+      },
     ]
   },
   {
@@ -55,16 +73,22 @@ const routes = [
         component: formView('OwnerForm')
       },
       {
+        name: 'ownerFormEdit',
+        path: 'owner/:id',
+        meta: { requiresAuth: true },
+        component: formView('OwnerForm')
+      },
+      {
         name: 'livestockForm',
         path: 'owner/livestock/:id',
         meta: { requiresAuth: true },
-        component: formView('LivestockForm')
+        component: formView('LivestocklandForm')
       },
       {
         name: 'livestockFormEdit',
-        path: 'owner/livestock/:id/:livestock',
+        path: 'owner/livestock/:id/:land',
         meta: { requiresAuth: true },
-        component: formView('LivestockForm')
+        component: formView('LivestocklandForm')
       },
       {
         name: 'landForm',
@@ -79,10 +103,22 @@ const routes = [
         component: formView('LandForm')
       },
       {
+        name: 'landDetail',
+        path: 'land-detail/:id',
+        meta: { requiresAuth: true },
+        component: formView('LandDetail')
+      },
+      {
         name: 'houseForm',
         path: 'owner/house/:id',
         meta: { requiresAuth: true },
         component: formView('HouseForm')
+      },
+      {
+        name: 'houseDetail',
+        path: 'house-detail/:id',
+        meta: { requiresAuth: true },
+        component: formView('HouseDetail')
       },
       {
         name: 'houseFormEdit',
@@ -90,12 +126,37 @@ const routes = [
         meta: { requiresAuth: true },
         component: formView('HouseForm')
       },
+      {
+        name: 'publicForm',
+        path: 'public',
+        meta: { requiresAuth: true },
+        component: formView('PublicForm')
+      },
+      {
+        name: 'publicFormEdit',
+        path: 'public/:public',
+        meta: { requiresAuth: true },
+        component: formView('PublicForm')
+      },
+      {
+        name: 'publicDetail',
+        path: 'public-detail/:id',
+        meta: { requiresAuth: true },
+        component: formView('PublicDetail')
+      },
     ]
   },
   {
     path: '/owner/:id',
     name: 'ownerDetail',
+    meta: { requiresAuth: true },
     component: loadView('OwnerDetail')
+  },
+  {
+    path: '/alldata',
+    name: 'allData',
+    meta: { requiresAuth: true },
+    component: loadView('AllData')
   },
 ]
 

@@ -8,6 +8,8 @@
         </gmap-polygon>
         <gmap-polygon v-for="(land) in lands" :key="land.id" :options="{ fillColor:land.fillColor,strokeColor:land.strokeColor,strokeWeight: 1 } " :paths="land.polygon.data" :draggable="false" :editable="false">
         </gmap-polygon>
+        <gmap-polygon v-for="(house) in houses" :key="house.id" :options="{ fillColor:house.fillColor,strokeColor:house.strokeColor,strokeWeight: 1 } " :paths="house.polygon.data" :draggable="false" :editable="false">
+        </gmap-polygon>
         <gmap-marker v-if="marker==true && mapMode==true"
             :position="center" :draggable="true" @dragend="markerPlace($event)">
         </gmap-marker>
@@ -68,7 +70,7 @@
             v-model="form.identity"
             height=20
             outlined
-            label="Identitas Lahan"
+            label="Identitas Peternakan"
             prepend-inner-icon="mdi-pier"
             color="indigo"
             light
@@ -82,20 +84,20 @@
           color="indigo"
           light
         ></v-text-field>
-        <v-select
+        <!-- <v-select
         v-model="form.type"
         :items="types"
         label="Jenis Lahan"
         outlined
         light
-        ></v-select>
+        ></v-select> -->
         <v-textarea
           light
           v-model="form.description"
           outlined
           label="Keterangan"
         ></v-textarea>
-        <!-- <div class="item-top">
+        <div class="item-top">
             <span class="item-title" style="color:black">Data Ternak</span>
             <v-btn class="item-add" @click="dialog2=true,typeInput2='new'" text icon >
             <v-icon color="orange" >mdi-plus-circle</v-icon>
@@ -136,7 +138,7 @@
                 </v-list-item-action>
             </v-list-item>   
             </div>
-        </div> -->
+        </div>
         <div style="display: flex; justify-content: flex-end">
           <v-btn @click="$router.go(-1)" tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
             Cancel
@@ -307,7 +309,7 @@ export default {
         allPaths: [],
         mode: 'hexa',
         marker: false,
-        types : ["Pertanian","Kebun","Lahan Kosong","Pekarangan","Lainnya"],
+        types : ["Pertanian","Kebun","Peternakan","Lahan Kosong","Pekarangan","Lainnya"],
         species : ["Ayam","Sapi","Bebek",'Kambing','Domba',"Lele","Lainnya"],
         gender : ["Jantan","Betina"],
         rules: {
@@ -339,7 +341,7 @@ export default {
       {
         payload = {
           identity: this.form.identity,
-          type: this.form.type,
+          type: "Peternakan",
           size: this.form.size,
           description: this.form.description,
           fillColor: this.options.fillColor,
@@ -353,7 +355,7 @@ export default {
       {
         payload = {
           identity: this.form.identity,
-          type: this.form.type,
+          type: "Peternakan",
           size: this.form.size,
           description: this.form.description,
           fillColor: this.options.fillColor,
@@ -552,6 +554,7 @@ export default {
   },
   mounted(){
       this.getAllData()
+      this.getHouseData()
       if (this.$route.params.land){
           this.title = "UBAH DATA LAHAN"
         //   this.links.push({text: this.$route.params.slug, disabled: false, to:{name: 'DetailEvent', params:{slug: this.$route.params.slug}}})

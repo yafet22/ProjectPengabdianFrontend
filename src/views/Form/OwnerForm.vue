@@ -9,7 +9,7 @@
         >
         <div class="form-header" style="border-top-left-radius: 4px;border-top-right-radius: 4px;">
             <div class="form-header-title">
-                MASUKAN DATA PEMILIK
+                {{title}}
             </div>
         </div>
         <div class="card-body">
@@ -58,7 +58,7 @@
               </v-date-picker>
             </v-dialog>
             <div style="display: flex; justify-content: flex-end">
-              <v-btn tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
+              <v-btn tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" @click="$router.go(-1)" class="elevation-0">
                 Cancel
               </v-btn>
               <v-btn tile small color="#FFB802" style="border-radius: 2px;width: 120px;height: 39px;" @click="store()" class="elevation-0">
@@ -102,6 +102,8 @@ export default {
         snackbar: false, 
         color: null,
         text: '', 
+        typeInput: 'new',
+        title: 'MASUKAN DATA PEMILIK'
     }
   },
   methods:{
@@ -111,7 +113,11 @@ export default {
               Authorization: 'Bearer ' + localStorage.getItem('token')
           }
       }
-      var uri = this.$apiUrl + '/owner'
+          if (this.typeInput === 'new') {
+            var uri = this.$apiUrl + '/owner'
+          } else {
+            var uri = this.$apiUrl + '/owner/'+this.$route.params.id;
+          }
           this.$http.post(uri,this.form,config).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar
             this.color = 'green'; //memberi warna snackbar
@@ -119,11 +125,36 @@ export default {
             this.$router.push({ name : 'ownerDetail',params:{id: response.data.data.id}})
           }).catch(error =>{
             this.snackbar = true;
-            this.text = error.response.data.message;
+            this.text = error.response.data.errors;
             this.color = 'red';
             this.load = false;
         })
     },
+    getData(){
+        var config = {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }
+        var uri = this.$apiUrl + '/inputs/'+this.$route.params.id;
+            this.$http.get(uri,config).then(response =>{
+                this.form=response.data.data;
+            }
+        )
+      },
+  },
+  mounted(){
+      if (this.$route.params.id){
+          this.title = "UBAH DATA PEMILIK"
+        //   this.links.push({text: this.$route.params.slug, disabled: false, to:{name: 'DetailEvent', params:{slug: this.$route.params.slug}}})
+          this.typeInput = 'edit'
+        //   this.changeImg = 3
+        //   this.links.push({text: 'Update', disabled: true})
+          this.getData()
+      }
+      else{
+        this.marker=true
+      }
   },
   
 }

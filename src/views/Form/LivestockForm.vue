@@ -1,6 +1,5 @@
 <template>
   <div style="width: 100%">
-    <v-flex xs12 md12 lg12 xl3>
         <v-card
         class="mx-auto elevation-0"
         color="#FFFFFF"
@@ -57,7 +56,6 @@
         </v-card-text>
         </div>
         </v-card>
-    </v-flex>
     <v-snackbar
       v-model="snackbar"
       :color="color"

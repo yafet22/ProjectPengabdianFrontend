@@ -29,17 +29,23 @@
         fixed
         style="max-width: 480px;left:unset"
       >
-        <v-btn active-class="v-btn--active">
+        <v-btn active-class="v-btn--active" @click="$router.push({ name : 'main' })">
           <span>Home</span>
           <v-icon>mdi-home</v-icon>
         </v-btn>
 
-        <v-btn>
+        <v-btn active-class="v-btn--active" @click="$router.push({ name : 'public' })">
+          <span>Publik</span>
+          <v-icon>mdi-hospital-building</v-icon>
+        </v-btn>
+
+        <v-btn @click="$router.push({ name : 'maps' })">
           <span>Maps</span>
           <v-icon>mdi-google-maps</v-icon>
         </v-btn>
+        
 
-        <v-btn>
+        <v-btn @click="$router.push({ name : 'profile' })">
           <span>Profile</span>
           <v-icon>mdi-account</v-icon>
         </v-btn>

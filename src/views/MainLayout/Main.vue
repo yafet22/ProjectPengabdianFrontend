@@ -33,12 +33,12 @@
                 Nama Pengguna     
                 </div>
                 <div id="body-subtitle">
-                Gerald of Rivia     
+                {{ username }}  
                 </div>    
             </v-col>
             <v-col col="6">
-                <v-btn @click="logout()" tile block small color="#90C30F" style="width:92px;height:24px;float:bottom;position: relative;bottom:-20px;" class="elevation-0">
-                Log Out
+                <v-btn @click="$router.push({ name : 'allData'})" tile block small color="#90C30F" style="width:92px;height:24px;float:bottom;position: relative;bottom:-20px;" class="elevation-0">
+                Semua Data
                 </v-btn>
             </v-col>
         </v-row>
@@ -49,7 +49,7 @@
                     Total Rumah
                 </div>
                 <div class="total-amount">
-                    44
+                    {{ total_houses }}
                 </div>      
             </v-col>
             <v-col col="4">
@@ -91,8 +91,23 @@
                 <v-list-item-subtitle>{{ owner.created_at.slice(0,10)}}</v-list-item-subtitle>
             </v-list-item-content>
 
-            <v-list-item-action>
-            <v-btn tile small color="#F6B931" style="width:60px;height:20px;font-size:7px" @click="$router.push({ name : 'ownerDetail',params:{id: owner.id}})" dark class="elevation-0">DETAIL</v-btn>
+            <v-list-item-action style="display:inline">
+             <v-btn tile small color="#F6B931" style="width:60px;height:20px;font-size:7px" @click="$router.push({ name : 'ownerDetail',params:{id: owner.id}})" dark class="elevation-0">DETAIL</v-btn>
+             <v-menu bottom left>
+                <template v-slot:activator="{ on }">
+                <v-btn class="item-add" text icon  v-on="on">
+                <v-icon color="#B0BEC5">mdi-dots-vertical</v-icon>
+                </v-btn>  
+                </template>
+                <v-list>
+                <v-list-item>
+                    <v-list-item-title @click="$router.push({ name : 'ownerFormEdit',params:{id: owner.id}})" >Edit</v-list-item-title>
+                </v-list-item>
+                <v-list-item >
+                    <v-list-item-title @click="deleteOwner(owner.id)" >Delete</v-list-item-title>
+                </v-list-item>
+                </v-list>
+            </v-menu>
             </v-list-item-action>
           </v-list-item>
             <v-divider :inset="inset"></v-divider>
@@ -110,7 +125,9 @@ export default {
        total_datas:0,
        total_livestocks:0,
        total_lands:0,
+       total_houses:0,
        inset: false,
+       username: null,
     }
   },
   methods:{
@@ -120,9 +137,11 @@ export default {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }
-        var uri = this.$apiUrl + '/my/inputs'
+        var uri = this.$apiUrl + '/my/limit'
             this.$http.get(uri,config).then(response =>{
-                this.owners=response.data.data;
+                this.username=response.data.data.name;
+                this.owners=response.data.data.owner.data;
+                localStorage.setItem('username',this.username)
                 localStorage.setItem('data',JSON.stringify(this.owners));
             }
         )
@@ -137,14 +156,36 @@ export default {
             this.$http.get(uri,config).then(response =>{
                 this.total_datas=response.data.total_datas;
                 this.total_lands=response.data.total_lands;
+                this.total_houses=response.data.total_houses;
                 this.total_livestocks=response.data.total_livestocks;
                 localStorage.setItem('total_datas',this.total_datas)
                 localStorage.setItem('total_lands',this.total_lands)
+                localStorage.setItem('total_houses',this.total_houses)
                 localStorage.setItem('total_livestocks',this.total_livestocks)
                 // this.owners=response.data.data;
                 // localStorage.setItem('data',JSON.stringify(this.owners));
             }
         )
+      },
+      deleteOwner(id)
+      {
+        var config = {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }
+        var uri = this.$apiUrl + '/owner/' + id;
+            this.$http.delete(uri,config).then(response =>{
+              this.snackbar = true; //mengaktifkan snackbar
+              this.color = 'green'; //memberi warna snackbar
+              this.text = 'Berhasil'; //memasukkan pesan ke snackbar
+              this.getData();
+            }).catch(error =>{
+              this.snackbar = true;
+              this.text = error.response.data.message;
+              this.color = 'red';
+              this.load = false;
+          })
       },
       logout(){
           localStorage.removeItem('token')
@@ -153,8 +194,10 @@ export default {
       }
   },
   mounted(){
+    this.username = localStorage.getItem('username');
     this.total_datas = localStorage.getItem('total_datas');
     this.total_lands = localStorage.getItem('total_lands');
+    this.total_houses = localStorage.getItem('total_houses');
     this.total_livestocks = localStorage.getItem('total_livestocks');
     this.owners=JSON.parse(localStorage.getItem('data') || "[]");  
     this.countData();

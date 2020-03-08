@@ -3,10 +3,10 @@
     <div class="infoMap" v-if="mapMode==true">
       Pilih lokasi berdasarkan marker lalu atur bentuk bangunan
     </div>
-    <gmap-map :center="center" :zoom="18" :options="mapMode==false? optionmaps : optionmaps2 " :style="mapMode==false? 'height:200px' : 'height:528px'" style="width: 100%;margin-bottom:16px"  @click="markerPlace($event)">
+    <gmap-map :center="center" :zoom="18" :options="mapMode==false? optionmaps : optionmaps2 " :style="mapMode==false? 'height:200px' : 'height:528px'" style="width: 100%;margin-bottom:16px" @click="markerPlace($event)">
         <gmap-polygon :options="options" :paths="paths" :draggable="true" :editable="true" @paths_changed="updateEdited($event)">
         </gmap-polygon>
-        <gmap-polygon v-for="(land) in lands" :key="land.id" :options="{ fillColor:land.fillColor,strokeColor:land.strokeColor,strokeWeight: 1 } " :paths="land.polygon.data" :draggable="false" :editable="false">
+        <gmap-polygon v-for="(building) in buildings" :key="building.id" :options="{ fillColor:building.fillColor,strokeColor:building.strokeColor,strokeWeight: 1 } " :paths="building.polygon.data" :draggable="false" :editable="false">
         </gmap-polygon>
         <gmap-marker v-if="marker==true && mapMode==true"
             :position="center" :draggable="true" @dragend="markerPlace($event)">
@@ -55,7 +55,7 @@
     class="mx-auto elevation-0"
     color="#FFFFFF"
     dark
-    style="border: 1px solid rgba(151, 151, 151, 0.25);box-sizing: border-box;border-radius: 4px;margin-bottom: 60px"
+    style="border: 1px solid rgba(151, 151, 151, 0.25);box-sizing: border-box;border-radius: 4px;margin-bottom: 68px"
     >
     <div class="form-header" style="border-top-left-radius: 4px;border-top-right-radius: 4px;">
         <div class="form-header-title">
@@ -73,72 +73,106 @@
             color="indigo"
             light
         ></v-text-field>
-        <v-text-field
-          v-model="form.size"
-          height=20
-          outlined
-          label="Luas Tanah"
-          prepend-inner-icon="mdi-image-size-select-small"
-          color="indigo"
-          light
-        ></v-text-field>
         <v-select
         v-model="form.type"
         :items="types"
-        label="Jenis Lahan"
+        label="Jenis Bangunan"
         outlined
         light
         ></v-select>
-        <v-textarea
-          light
-          v-model="form.description"
-          outlined
-          label="Keterangan"
-        ></v-textarea>
-        <!-- <div class="item-top">
-            <span class="item-title" style="color:black">Data Ternak</span>
-            <v-btn class="item-add" @click="dialog2=true,typeInput2='new'" text icon >
-            <v-icon color="orange" >mdi-plus-circle</v-icon>
-            </v-btn>
-        </div>
-        <div v-if="livestocks.length<1" class="item-list isEmpty">
-            <span>Tidak Terdapat Data</span>
-        </div>
-        <div v-else class="item-list" style="margin-bottom:64px">
-            <div v-for="(livestock) in livestocks" :key="livestock.id">
-            <v-list-item light >
-                <v-list-item-icon>
-                    <v-icon large :color="livestock.gender=='Betina' ? 'pink' : 'indigo'">mdi-cow</v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                    <v-list-item-title>{{ livestock.species + " " + livestock.gender }}</v-list-item-title>
-                    <v-list-item-subtitle>{{"Jumlah : " + livestock.amount }}</v-list-item-subtitle>
-                </v-list-item-content>
-
-                <v-list-item-action>
-                    <v-menu bottom left>
-                      <template v-slot:activator="{ on }">
-                        <v-btn class="item-add" text icon  v-on="on">
-                        <v-icon color="#B0BEC5">mdi-dots-vertical</v-icon>
-                        </v-btn>  
-                      </template>
-
-                      <v-list>
-                        <v-list-item>
-                          <v-list-item-title @click="editLivestock(livestock)" >Edit</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-title  @click="deleteLivestock(livestock)" >Delete</v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                </v-list-item-action>
-            </v-list-item>   
-            </div>
-        </div> -->
+         <v-select
+        v-model="form.function"
+        :items="functions"
+        label="Fungsi Bangunan"
+        outlined
+        light
+        ></v-select>
+        <v-select
+        v-model="form.genset"
+        :items="choices"
+        label="Apakah Terdapat Genset"
+        outlined
+        light
+        ></v-select>
+        <v-select
+        v-model="form.water_sources"
+        :items="waters"
+        label="Sumber Air"
+        outlined
+        light
+        ></v-select>
+        <v-text-field
+            v-model="form.owner"
+            height=20
+            outlined
+            label="Pemilik"
+            prepend-inner-icon="mdi-account-key"
+            color="indigo"
+            light
+        ></v-text-field>
+        <v-text-field
+            v-model="form.address"
+            height=20
+            outlined
+            label="Alamat"
+            prepend-inner-icon="mdi-map-marker"
+            color="indigo"
+            light
+        ></v-text-field>
+        <v-select
+            v-model="form.construction_year"
+            :items="years"
+            label="Tahun Pembangunan"
+            outlined
+            light
+        ></v-select>
+        <v-text-field
+            v-model="form.land_size"
+            height=20
+            outlined
+            label="Luas Tanah"
+            prepend-inner-icon="mdi-map-outline"
+            color="indigo"
+            light
+        ></v-text-field>
+        <v-text-field
+            v-model="form.construction_size"
+            height=20
+            outlined
+            label="Luas Bangunan"
+            prepend-inner-icon="mdi-office-building"
+            color="indigo"
+            light
+        ></v-text-field>
+        <v-text-field
+            v-model="form.number_of_bathrooms"
+            height=20
+            outlined
+            label="Jumlah Kamar Mandi"
+            prepend-inner-icon="mdi-paper-roll"
+            color="indigo"
+            light
+        ></v-text-field>
+        <v-text-field
+            v-model="form.reservoir_size"
+            height=20
+            outlined
+            label="Ukuran Tandon"
+            prepend-inner-icon="mdi-cube"
+            color="indigo"
+            light
+        ></v-text-field>
+        <v-text-field
+            v-model="form.width_of_building_entrance"
+            height=20
+            outlined
+            label="Lebar Jalan Masuk"
+            prepend-inner-icon="mdi-road-variant"
+            color="indigo"
+            light
+        ></v-text-field>
         <div style="display: flex; justify-content: flex-end">
-          <v-btn @click="$router.go(-1)" tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
+          <v-btn tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
             Cancel
           </v-btn>
           <v-btn tile small color="#FFB802" style="border-radius: 2px;width: 120px;height: 39px;" @click="store()" class="elevation-0">
@@ -221,49 +255,6 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialog2" persistent max-width="390">
-      <v-card>
-        <v-card-title class="headline" style="margin-bottom:8px">Masukan Data Ternak</v-card-title>
-        <v-card-text>
-            <v-form v-model="isFormValid">
-              <v-select
-              v-model="form2.species"
-              :rules="[rules.required]"
-              :items="species"
-              label="Jenis Ternak"
-              outlined
-              light
-              ></v-select>
-              <v-select
-              v-model="form2.gender"
-              :rules="[rules.required]"
-              :items="gender"
-              label="Jenis Kelamin"
-              outlined
-              light
-              ></v-select>
-              <v-text-field
-                  v-model="form2.amount"
-                  height=20
-                  outlined
-                  :rules="[rules.required,rules.numberOnly]"
-                  label="Jumlah"
-                  prepend-inner-icon="mdi-database-plus"
-                  color="indigo"
-                  light
-              ></v-text-field>
-            </v-form>
-            <div style="display: flex; justify-content: flex-end">
-              <v-btn dark tile small color="#FFFFFF"  style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;" @click="dialog2=false" class="elevation-0">
-                Close
-              </v-btn>
-              <v-btn :disabled="!isFormValid" tile light small color="#FFB802" style="border-radius: 2px;width: 120px;height: 39px;color:white" @click="submitLivestock()" class="elevation-0">
-                  Finish
-              </v-btn>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -274,24 +265,24 @@ export default {
     return {
         form : {
            identity : null,
-           size : null,
            type : null,
+           owner : null,
+           address : null,
+           function : null,
+           construction_year : null,
+           construction_size : null,
+           land_size : null,
+           number_of_bathrooms : null,
+           genset : null,
+           water_sources : null,
+           reservoir_size : null,
+           width_of_building_entrance : null,
            fillColor : null,
            strokeColor : null,
-           owner_id : null,
-           description : null,
         }, 
-        form2 : {
-           amount : null,
-           species : null,
-           gender : null,
-        }, 
-        isFormValid: false, 
         lands:[],
         houses:[],
-        item:{},
-        dialog2 : false,
-        livestocks : [],
+        buildings:[],
         showColor1:false,
         showColor2:false,
         dialog: false,
@@ -300,31 +291,32 @@ export default {
           scrollwheel: false, mapTypeControl: false, draggable: false, disableDoubleClickZoom: true,zoomControl: false                      
         },
         optionmaps2 : {
-          scrollwheel: true, mapTypeControl: true, draggable: true, disableDoubleClickZoom: false,zoomControl: true  , clickableIcons: false                   
+          scrollwheel: true, mapTypeControl: true, draggable: true, disableDoubleClickZoom: false,zoomControl: true, clickableIcons: false                     
         },
         options : {strokeColor: '#3F5498',fillColor: '#3F5498',strokeWeight: 1},
         paths: [],
         allPaths: [],
         mode: 'hexa',
         marker: false,
-        types : ["Pertanian","Kebun","Lahan Kosong","Pekarangan","Lainnya"],
-        species : ["Ayam","Sapi","Bebek",'Kambing','Domba',"Lele","Lainnya"],
-        gender : ["Jantan","Betina"],
-        rules: {
-          required: value => !!value || 'Data is required',
-          numberOnly: value => !isNaN(value) || 'Number Only',
-          textOnly: value => RegExp(/^[A-Za-z ]+$/).test(value) || 'Text Only'
-        },
+        choices : ["Ya","Tidak"],
+        waters : ["Sumur","PDAM"],
+        types : ["Bangunan Publik"],
+        functions : ["Kantor Polisi","Balai Desa","Balai Dusun","Balai RT","Balai RW","Puskesmas","Lainnya"],
         date: new Date().toISOString().substr(0, 10),
         modal: false,
         snackbar: false, 
         color: null,
         edited: false,
         text: '', 
-        title: 'MASUKAN DATA LAHAN',
+        title: 'MASUKAN DATA BANGUNAN',
         typeInput: 'new',
-        typeInput2: 'new',
         mapMode: false,
+    }
+  },
+  computed : {
+    years () {
+      const year = new Date().getFullYear()
+      return Array.from({length: year - 1900}, (value, index) => 1901 + index)
     }
   },
   methods:{
@@ -340,13 +332,20 @@ export default {
         payload = {
           identity: this.form.identity,
           type: this.form.type,
-          size: this.form.size,
-          description: this.form.description,
+          owner : this.form.owner,
+          address : this.form.address,
+          function : this.form.function,
+          construction_year : this.form.construction_year,
+          construction_size : this.form.construction_size,
+          land_size : this.form.land_size,
+          number_of_bathrooms : this.form.number_of_bathrooms,
+          genset : this.form.genset,
+          water_sources : this.form.water_sources,
+          reservoir_size : this.form.reservoir_size,
+          width_of_building_entrance : this.form.width_of_building_entrance,
           fillColor: this.options.fillColor,
           strokeColor: this.options.strokeColor,
-          owner_id: this.$route.params.id,
-          polygons: this.paths[0],
-          livestocks: this.livestocks
+          polygons: this.paths[0]
         }
       }
       else if(this.edited==false)
@@ -354,27 +353,34 @@ export default {
         payload = {
           identity: this.form.identity,
           type: this.form.type,
-          size: this.form.size,
-          description: this.form.description,
+          owner : this.form.owner,
+          address : this.form.address,
+          function : this.form.function,
+          construction_year : this.form.construction_year,
+          construction_size : this.form.construction_size,
+          land_size : this.form.land_size,
+          number_of_bathrooms : this.form.number_of_bathrooms,
+          genset : this.form.genset,
+          water_sources : this.form.water_sources,
+          reservoir_size : this.form.reservoir_size,
+          width_of_building_entrance : this.form.width_of_building_entrance,
           fillColor: this.options.fillColor,
           strokeColor: this.options.strokeColor,
-          owner_id: this.$route.params.id,
-          polygons: this.paths,
-          livestocks: this.livestocks
+          polygons: this.paths
         }
       }
       
       // this.form.owner_id = this.$route.params.id;
       if (this.typeInput === 'new') {
-        var uri = this.$apiUrl + '/land'
+        var uri = this.$apiUrl + '/publicbuilding'
       } else {
-        var uri = this.$apiUrl + '/land/'+this.$route.params.land;
+        var uri = this.$apiUrl + '/publicbuilding/'+this.$route.params.public;
       }
       this.$http.post(uri,payload,config).then(response =>{
         this.snackbar = true; //mengaktifkan snackbar
         this.color = 'green'; //memberi warna snackbar
         this.text = 'Berhasil'; //memasukkan pesan ke snackbar
-        this.$router.push({ name : 'ownerDetail',params:{id: this.$route.params.id}})
+        this.$router.push({ name : 'public' })
         }).catch(error =>{
         this.snackbar = true;
         this.text = error.response.data.errors;
@@ -382,80 +388,14 @@ export default {
         this.load = false;
       })
     },
-    submitLivestock()
-    {
-        if(this.typeInput2=='new')
-        {
-          var i = 0
-          var object = this.form2
-          for(var data in this.livestocks)
-          {
-              if(this.livestocks[i].species==object.species && this.livestocks[i].gender==object.gender )
-              {
-                   this.snackbar = true;
-                   this.text = "Data Sudah Diinputkan";
-                   this.color = 'red';
-                   return
-              }
-              i++;
-          }
-          this.livestocks.push(JSON.parse(JSON.stringify(this.form2)))
-        }
-        else{
-          var i = 0
-          var object = this.form2
-          for(var data in this.livestocks)
-          {
-              if(this.livestocks[i].species==object.species && this.livestocks[i].gender==object.gender )
-              {
-                   this.snackbar = true;
-                   this.text = "Data Sudah Diinputkan";
-                   this.color = 'red';
-                   return
-              }
-              i++;
-          }
-          var index = this.livestocks.indexOf(this.item);
-          this.livestocks[index].amount=this.form2.amount
-          this.livestocks[index].species=this.form2.species
-          this.livestocks[index].gender=this.form2.gender
-        }
-
-        this.dialog2=false
-        this.resetFormLiveStock()
-        // this.resetForm3()
-    },
-    editLivestock(item)
-    {
-      
-        this.form2=item
-        this.item=item
-        this.typeInput2="edit"
-        this.dialog2=true
-    },
-
-    deleteLivestock(item)
-    {
-        var index = this.livestocks.indexOf(item);
-        this.livestocks.splice(index, 1);
-    },
-    resetFormLiveStock()
-    {
-      this.form2 = {
-           amount : null,
-           species : null,
-           gender : null,
-        }
-    },
     getPostData(){
         var config = {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }
-        this.$http.get(this.$apiUrl + '/land/'+this.$route.params.land,config).then(response =>{
+        this.$http.get(this.$apiUrl + '/publicbuilding/'+this.$route.params.public,config).then(response =>{
             this.form = response.data.data
-            this.livestocks = response.data.data.livestock.data
             this.paths = response.data.data.polygon.data
             this.options.fillColor = response.data.data.fillColor
             this.options.strokeColor = response.data.data.strokeColor
@@ -475,7 +415,7 @@ export default {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }
-        await this.$http.get(this.$apiUrl + '/owner-land/'+this.$route.params.id,config).then(response =>{
+        await this.$http.get(this.$apiUrl + '/land',config).then(response =>{
             this.lands = response.data.data
         })
     },
@@ -485,14 +425,24 @@ export default {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }
-        await this.$http.get(this.$apiUrl + '/owner-house/'+this.$route.params.id,config).then(response =>{
+        await this.$http.get(this.$apiUrl + '/house',config).then(response =>{
             this.houses = response.data.data
         })
     },
+    async getPublicData(){
+        var config = {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }
+        await this.$http.get(this.$apiUrl + '/publicbuilding',config).then(response =>{
+            this.buildings = response.data.data
+        })
+    },
     updateEdited(mvcArray) {
-      for( var i = 0; i < this.lands.length; i++){ 
-        if ( this.lands[i].id == this.$route.params.land) {
-          this.lands.splice(i, 1); 
+      for( var i = 0; i < this.buildings.length; i++){ 
+        if ( this.buildings[i].id == this.$route.params.public) {
+          this.buildings.splice(i, 1); 
         }
       }
       let paths = [];
@@ -526,9 +476,9 @@ export default {
     },
     clearMarker()
     {
-      for( var i = 0; i < this.lands.length; i++){ 
-        if ( this.lands[i].id == this.$route.params.land) {
-          this.lands.splice(i, 1); 
+      for( var i = 0; i < this.buildings.length; i++){ 
+        if ( this.buildings[i].id == this.$route.params.public) {
+          this.buildings.splice(i, 1); 
         }
       }
       this.marker=true
@@ -551,9 +501,9 @@ export default {
 		},
   },
   mounted(){
-      this.getAllData()
-      if (this.$route.params.land){
-          this.title = "UBAH DATA LAHAN"
+      this.getPublicData()
+      if (this.$route.params.public){
+          this.title = "UBAH DATA BANGUNAN"
         //   this.links.push({text: this.$route.params.slug, disabled: false, to:{name: 'DetailEvent', params:{slug: this.$route.params.slug}}})
           this.typeInput = 'edit'
         //   this.changeImg = 3

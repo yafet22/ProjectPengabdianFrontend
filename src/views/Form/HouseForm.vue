@@ -1,19 +1,25 @@
 <template>
   <div style="width: 100%">
-    <gmap-map :center="center" :zoom="16" :style="mapMode==false? 'height:200px' : 'height:528px'" style="width: 100%;margin-bottom:16px" @click="markerPlace($event)">
+    <div class="infoMap" v-if="mapMode==true">
+      Pilih lokasi berdasarkan marker lalu atur bentuk bangunan
+    </div>
+    <gmap-map :center="center" :zoom="18" :options="mapMode==false? optionmaps : optionmaps2 "  :style="mapMode==false? 'height:200px' : 'height:528px'" style="width: 100%;margin-bottom:16px" @click="markerPlace($event)">
         <gmap-polygon :options="options" :paths="paths" :draggable="true" :editable="true" @paths_changed="updateEdited($event)">
         </gmap-polygon>
-        <gmap-polygon v-for="(land) in lands" :key="land.id" :options="{ fillColor:land.fillColor,strokeColor:land.strokeColor,strokeWeight: 1 } " :paths="land.polygon.data" :draggable="false" :editable="false">
+        <gmap-polygon v-for="(house) in houses" :key="house.id" :options="{ fillColor:house.fillColor,strokeColor:house.strokeColor,strokeWeight: 1 } " :paths="house.polygon.data" :draggable="false" :editable="false">
         </gmap-polygon>
-        <gmap-marker v-if="marker==true"
+        <gmap-marker v-if="marker==true && mapMode==true"
             :position="center" :draggable="true" @dragend="markerPlace($event)">
+        </gmap-marker>
+        <gmap-marker v-else-if="marker==true && mapMode==false"
+            :position="center" :draggable="false" @dragend="markerPlace($event)">
         </gmap-marker>
     </gmap-map>
     <v-toolbar
     v-if="mapMode==true"
       dense
       floating
-      style="position: absolute;top: 85px;left: 38px;"
+      style="position: absolute;top: 105px;left: 38px;"
       color="elevation-0"
     >
       <gmap-autocomplete
@@ -27,7 +33,7 @@
     </v-toolbar>
     <div v-if="mapMode==true" style="display: flex;">
     <v-btn tile small color="#3F51B5" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px" @click="setMarker()" class="elevation-0">
-      Set Marker
+      Tetapkan Lokasi
     </v-btn>
     <v-btn tile small color="red" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px" @click="clearMarker()" class="elevation-0">
       Clear
@@ -39,10 +45,10 @@
     </v-btn>
     </div>
     <v-btn v-if="mapMode==false" @click="mapMode=true" block dark tile small color="#3A4D8C" style="margin-bottom:16px;border-radius: 2px;width: 120px;height: 39px;" class="elevation-0">
-      Adjust Map
+      Tentukan Denah
     </v-btn>
-    <v-btn v-else @click="mapMode=false" block dark tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
-      Done
+    <v-btn v-else @click="mapMode=false" block dark tile small color="#FFB802" style="border: 1px solid rgba(151, 151, 151, 0.45);box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px;margin-bottom:60px" class="elevation-0">
+      Tambahkan Denah
     </v-btn>
     <v-card
     v-if="mapMode==false"
@@ -65,7 +71,7 @@
 
             <v-divider></v-divider>
 
-            <v-stepper-step step="3"></v-stepper-step>
+            <v-stepper-step :complete="e1 > 3" step="3"></v-stepper-step>
             <v-divider></v-divider>
 
             <v-stepper-step step="4"></v-stepper-step>
@@ -142,7 +148,7 @@
                 light
             ></v-text-field>
             <div style="display: flex; justify-content: flex-end">
-                <v-btn tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
+                <v-btn @click="$router.go(-1)" tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
                     Cancel
                 </v-btn>
                 <v-btn tile dark small color="#FFB802" style="border-radius: 2px;width: 120px;height: 39px;" @click="e1=2" class="elevation-0">
@@ -198,7 +204,7 @@
                 light
             ></v-text-field>
             <div style="display: flex; justify-content: flex-end">
-                <v-btn tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
+                <v-btn @click="e1=0" tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
                     Cancel
                 </v-btn>
                 <v-btn tile dark small color="#FFB802" style="border-radius: 2px;width: 120px;height: 39px;" @click="e1=3" class="elevation-0">
@@ -249,11 +255,105 @@
                 outlined
                 light
             ></v-select>
+            <div>
+              <div class="title-photo">
+                Insert Photo
+              </div>
+              <v-layout wrap fill-height align-space-between row style="padding-left:12px;padding-right:12px;margin-bottom:24px">
+                <v-flex class="box-photo" xl-3 md3 sm3 xs3 mx-2 my-2> 
+                    <div class="content-photo">
+                        <img :src="require('@/assets/photo-add.svg')" >
+                    </div>
+                    <input type="file" class="uploadButton" accept="image/png, image/jpeg, image/gif, image/jpg" @input="uploadImg($event)">
+                </v-flex>
+                <v-flex class="box-photo" v-for="item in savedImage" v-bind:key="item.key" xl-3 md3 sm3 xs3 mx-2 my-2> 
+                    <v-icon dark color="red" class="iconCancel" @click.prevent="deleteImage(item.id)">mdi-close-circle</v-icon>
+                    <img class="content-photo" :src="$imageUrl + '/images/'+item.filename">
+                </v-flex>
+                <v-flex class="box-photo" v-for="item in thumbnails" v-bind:key="item.key" xl-3 md3 sm3 xs3 mx-2 my-2> 
+                    <v-icon dark color="red" class="iconCancel" @click.prevent="clear(item)">mdi-close-circle</v-icon>
+                    <img class="content-photo" :src="item.display" >
+                </v-flex>
+                <!-- <v-flex class="box-photo" xl-3 md3 sm3 xs3 mx-2 my-2> 
+                    <div class="content-photo">
+                        <img :src="require('@/assets/photo-add.svg')" >
+                    </div>
+                </v-flex>
+                <v-flex class="box-photo" xl-3 md3 sm3 xs3 mx-2 my-2> 
+                    <div class="content-photo">
+                        <img :src="require('@/assets/photo-add.svg')" >
+                    </div>
+                </v-flex>
+                <v-flex class="box-photo" xl-3 md3 sm3 xs3 mx-2 my-2> 
+                    <div class="content-photo">
+                        <img :src="require('@/assets/photo-add.svg')" >
+                    </div>
+                </v-flex>
+                <v-flex class="box-photo" xl-3 md3 sm3 xs3 mx-2 my-2> 
+                    <div class="content-photo">
+                        <img :src="require('@/assets/photo-add.svg')" >
+                    </div>
+                </v-flex> -->
+              </v-layout>         
+            </div>
             <div style="display: flex; justify-content: flex-end">
-                <v-btn tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
+                <v-btn @click="e1=2" tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
                     Cancel
                 </v-btn>
                 <v-btn tile dark small color="#FFB802" style="border-radius: 2px;width: 120px;height: 39px;" @click="store()" class="elevation-0">
+                    Next
+                </v-btn>
+            </div>
+            </v-card-text>
+            <v-card-text style="padding:24px" step="4" v-else-if="e1==4" >
+            <div class="item-top">
+                <span class="item-title" style="color:black">Ruangan</span>
+                <v-btn class="item-add" text icon @click="resetForm2();dialogRooms=true;typeInput2='new'">
+                <v-icon color="orange" >mdi-plus-circle</v-icon>
+                </v-btn>
+            </div>
+            <div v-if="rooms.length<1" class="item-list isEmpty">
+                <span>Tidak Terdapat Data</span>
+            </div>
+            <div v-else class="item-list">
+                <div v-for="(room) in rooms" :key="room.id">
+                <v-list-item >
+                    <v-list-item-icon>
+                        <v-icon large color="indigo">mdi-window-shutter-open</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>{{ room.category }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ room.size }}</v-list-item-subtitle>
+                    </v-list-item-content>
+
+                    <v-list-item-action>
+                        <v-menu bottom left>
+                          <template v-slot:activator="{ on }">
+                            <v-btn class="item-add" text icon  v-on="on">
+                            <v-icon color="#B0BEC5">mdi-dots-vertical</v-icon>
+                            </v-btn>  
+                          </template>
+
+                          <v-list>
+                            <v-list-item>
+                              <v-list-item-title @click="editRoom(room.id)" >Edit</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item >
+                              <v-list-item-title @click="deleteRoom(room.id)" >Delete</v-list-item-title>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
+                    </v-list-item-action>
+                </v-list-item>  
+                 
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end">
+                <v-btn @click="e1=3" tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
+                    Cancel
+                </v-btn>
+                <v-btn tile dark small color="#FFB802" style="border-radius: 2px;width: 120px;height: 39px;" @click="$router.push({ name : 'ownerDetail',params:{id: $route.params.id}})" class="elevation-0">
                     Finish
                 </v-btn>
             </div>
@@ -335,6 +435,132 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogRooms" persistent max-width="390">
+      <v-card>
+        <v-card-title class="headline" style="margin-bottom:8px">Tambah Data Ruangan</v-card-title>
+        <v-card-text v-if="addWindow==false"> 
+          <v-select
+              v-model="form2.category"
+              :items="categories"
+              label="Kategori Ruangan"
+              outlined
+              light
+          ></v-select>
+          <v-select
+              v-model="form2.artificial_light"
+              :items="choices"
+              label="Apakah diperlukan cahaya buatan pada ruang ini?"
+              outlined
+              light
+          ></v-select>
+          <v-select
+              v-model="form2.artificial_cooler"
+              :items="choices"
+              label="Apakah diperlukan pendingin buatan pada ruang ini?"
+              outlined
+              light
+          ></v-select>
+          <v-text-field
+              v-model="form2.size"
+              height=20
+              outlined
+              label="Luas Ruangan"
+              prepend-inner-icon="mdi-border-all-variant"
+              color="indigo"
+              light
+          ></v-text-field>
+          <div class="item-top">
+                <span class="item-title" style="color:black">Jendela/Ventilasi</span>
+                <v-btn class="item-add" text icon @click="addWindow=true,typeInput3='new'">
+                <v-icon color="orange" >mdi-plus-circle</v-icon>
+                </v-btn>
+            </div>
+            <div v-if="windows.length<1" class="item-list isEmpty" style="margin-bottom:24px">
+                <span>Tidak Terdapat Data</span>
+            </div>
+            <div v-else class="item-list" style="margin-bottom:24px">
+                <div v-for="(window) in windows" :key="window.id">
+                <v-list-item >
+                    <v-list-item-icon>
+                        <v-icon large color="indigo">mdi-window-closed-variant</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>{{ window.type }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ window.placement }}</v-list-item-subtitle>
+                    </v-list-item-content>
+
+                    <v-list-item-action>
+                        <v-menu bottom left>
+                          <template v-slot:activator="{ on }">
+                            <v-btn class="item-add" text icon v-on="on">
+                            <v-icon color="#B0BEC5">mdi-dots-vertical</v-icon>
+                            </v-btn>  
+                          </template>
+
+                          <v-list>
+                            <v-list-item>
+                              <v-list-item-title @click="editWindow(window)" >Edit</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item >
+                              <v-list-item-title @click="deleteWindow(window)" >Delete</v-list-item-title>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
+                    </v-list-item-action>
+                </v-list-item>  
+                 
+                </div>
+            </div> 
+          <div style="display: flex; justify-content: flex-end">
+            <v-btn dark tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;" @click="dialogRooms=false" class="elevation-0">
+              Close
+            </v-btn>
+            <v-btn tile dark small color="#FFB802" style="border-radius: 2px;width: 120px;height: 39px;" @click="storeRoom()" class="elevation-0">
+                Finish
+            </v-btn>
+          </div>
+        </v-card-text>
+        <v-card-text v-else> 
+          <v-form v-model="isFormValid">
+            <v-select
+                v-model="form3.type"
+                :items="windowTypes"
+                label="Type"
+                outlined
+                light
+                :rules="[rules.required]"
+            ></v-select>
+            <v-select
+                v-model="form3.placement"
+                :items="compass"
+                label="Letak"
+                outlined
+                light
+                :rules="[rules.required]"
+            ></v-select>
+            <v-text-field
+                v-model="form3.size"
+                height=20
+                outlined
+                label="Luas"
+                prepend-inner-icon="mdi-border-all-variant"
+                color="indigo"
+                light
+                :rules="[rules.required,rules.numberOnly]"
+            ></v-text-field>
+          </v-form>
+          <div style="display: flex; justify-content: flex-end">
+            <v-btn dark tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;" @click="addWindow=false" class="elevation-0">
+              Close
+            </v-btn>
+            <v-btn :disabled="!isFormValid" tile light small color="#FFB802" style="border-radius: 2px;width: 120px;height: 39px;color:white" @click="submitWindow()" class="elevation-0">
+                Finish
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -358,7 +584,6 @@ export default {
            number_of_girls : null,
            number_of_married_couples : null,
            designer : null,
-           constructor : null,
            septic_tank : "Ya",
            grease_trap : "Ya",
            rain_water_managment : "Ya",
@@ -367,19 +592,48 @@ export default {
            strokeColor : null,
            owner_id : null,
         },
+        form2 : {
+          category : null,
+          size : null,
+          artificial_light : null,
+          artificial_cooler : null,
+          windows : [],
+        },
+        form3 : {
+          type : null,
+          size : null,
+          placement : null,
+        },
+        optionmaps : {
+          scrollwheel: false, mapTypeControl: false, draggable: false, disableDoubleClickZoom: true,zoomControl: false                      
+        },
+        optionmaps2 : {
+          scrollwheel: true, mapTypeControl: true, draggable: true, disableDoubleClickZoom: false,zoomControl: true, clickableIcons: false                     
+        },
+        isFormValid: false, 
+        idHouse: null,
+        idRoom: null,
+        categories : ["Ruang Tamu","Kamar Tidur","Kamar Mandi","Dapur","Gudang","Ruang Keluarga","Ruang Makan","Garasi"],
         compass: ["Utara","Barat Laut","Barat","Barat Daya","Selatan","Tenggara","Timur","Timur Laut"], 
         e1:0,
         lands:[],
+        houses:[],
+        windows:[],
+        savedImage:[],
+        addWindow:false,
         showColor1:false,
         showColor2:false,
         dialog: false,
+        dialogRooms: false,
         center: { lat:-7.779047, lng: 110.416957 },
         options : {strokeColor: '#3F5498',fillColor: '#3F5498',strokeWeight: 1},
         paths: [],
         allPaths: [],
         mode: 'hexa',
         marker: false,
+        windowTypes:["Jendela Hidup","Jendela Mati","Ventilasi"],
         designers : ["Sendiri","Tukang","Arsitek/Teknik Sipil/Kontraktor","Lainnya"],
+        designers2 : ["Sendiri","Tukang","Arsitek/Teknik Sipil/Kontraktor","Lainnya"],
         choices : ["Ya","Tidak"],
         date: new Date().toISOString().substr(0, 10),
         modal: false,
@@ -389,7 +643,24 @@ export default {
         text: '', 
         title: 'MASUKAN DATA RUMAH',
         typeInput: 'new',
+        typeInput2: 'new',
+        typeInput3: 'new',
+        item:{},
         mapMode: false,
+        data: new FormData,
+        rooms:[],
+        img: null,
+        images : [],
+        thumbnails : [],
+        thumbnail : {
+          display : null,
+          base64 : null
+        },
+        rules: {
+          required: value => !!value || 'Data is required',
+          numberOnly: value => !isNaN(value) || 'Number Only',
+          textOnly: value => RegExp(/^[A-Za-z ]+$/).test(value) || 'Text Only'
+        },
     }
   },
   computed : {
@@ -406,64 +677,225 @@ export default {
           }
       }
       var payload 
+      console.log(this.form.constructor)
       if(this.edited==true)
       {
-        payload = {
-          identity: this.form.identity,
-          fillColor: this.options.fillColor,
-          strokeColor: this.options.strokeColor,
-          owner_id: this.$route.params.id,
-          address : this.form.identity,
-          construction_year : this.form.construction_year,
-          land_size : this.form.land_size,
-          construction_size : this.form.construction_size,
-          floor_size : this.form.floor_size,
-          floors_number : this.form.floors_number,
-          side_facing : this.form.side_facing,
-          number_of_adult_male : this.form.number_of_adult_male,
-          number_of_adult_female : this.form.number_of_adult_female,
-          number_of_boys : this.form.number_of_boys,
-          number_of_girls : this.form.number_of_girls,
-          number_of_married_couples : this.form.number_of_married_couples,
-          designer : this.form.designer,
-          constructor : this.form.constructor,
-          septic_tank : this.form.septic_tank,
-          grease_trap : this.form.grease_trap,
-          rain_water_managment : this.form.rain_water_managment,
-          kloset_leher_angsa : this.form.kloset_leher_angsa,
-          polygons: this.paths[0]
-        }
+        this.data = new FormData
+        this.data.append('identity', this.form.identity);
+        this.data.append('fillColor', this.options.fillColor);
+        this.data.append('strokeColor', this.options.strokeColor);
+        this.data.append('owner_id',  this.$route.params.id);
+        this.data.append('address', this.form.address);
+        this.data.append('construction_year', this.form.construction_year);
+        this.data.append('land_size', this.form.land_size);
+        this.data.append('construction_size', this.form.construction_size);
+        this.data.append('floor_size', this.form.floor_size);
+        this.data.append('floors_number', this.form.floors_number);
+        this.data.append('side_facing', this.form.side_facing);
+        this.data.append('number_of_adult_male', this.form.number_of_adult_male);
+        this.data.append('number_of_adult_female', this.form.number_of_adult_female);
+        this.data.append('number_of_boys', this.form.number_of_boys);
+        this.data.append('number_of_girls', this.form.number_of_girls);
+        this.data.append('number_of_married_couples', this.form.number_of_married_couples);
+        this.data.append('designer', this.form.designer);
+        this.data.append('constructor', this.form.constructor);
+        this.data.append('septic_tank', this.form.septic_tank);
+        this.data.append('grease_trap', this.form.grease_trap);
+        this.data.append('rain_water_managment', this.form.rain_water_managment);
+        this.data.append('kloset_leher_angsa', this.form.kloset_leher_angsa);
+        this.data.append('image', this.images);
+        this.data.append('polygons',  JSON.stringify(this.paths[0]));
+        // payload = {
+        //   identity: this.form.identity,
+        //   fillColor: this.options.fillColor,
+        //   strokeColor: this.options.strokeColor,
+        //   owner_id: this.$route.params.id,
+        //   address : this.form.identity,
+        //   construction_year : this.form.construction_year,
+        //   land_size : this.form.land_size,
+        //   construction_size : this.form.construction_size,
+        //   floor_size : this.form.floor_size,
+        //   floors_number : this.form.floors_number,
+        //   side_facing : this.form.side_facing,
+        //   number_of_adult_male : this.form.number_of_adult_male,
+        //   number_of_adult_female : this.form.number_of_adult_female,
+        //   number_of_boys : this.form.number_of_boys,
+        //   number_of_girls : this.form.number_of_girls,
+        //   number_of_married_couples : this.form.number_of_married_couples,
+        //   designer : this.form.designer,
+        //   constructor : this.form.constructor,
+        //   septic_tank : this.form.septic_tank,
+        //   grease_trap : this.form.grease_trap,
+        //   rain_water_managment : this.form.rain_water_managment,
+        //   kloset_leher_angsa : this.form.kloset_leher_angsa,
+        //   polygons: JSON.stringify(this.paths[0])
+        // }
       }
       else if(this.edited==false)
       {
-        payload = {
-          identity: this.form.identity,
-          type: this.form.type,
-          size: this.form.size,
-          fillColor: this.options.fillColor,
-          strokeColor: this.options.strokeColor,
-          owner_id: this.$route.params.id,
-          polygons: this.paths
-        }
+          this.data = new FormData
+          this.data.append('identity', this.form.identity);
+          this.data.append('fillColor', this.options.fillColor);
+          this.data.append('strokeColor', this.options.strokeColor);
+          this.data.append('owner_id',  this.$route.params.id);
+          this.data.append('address', this.form.address);
+          this.data.append('construction_year', this.form.construction_year);
+          this.data.append('land_size', this.form.land_size);
+          this.data.append('construction_size', this.form.construction_size);
+          this.data.append('floor_size', this.form.floor_size);
+          this.data.append('floors_number', this.form.floors_number);
+          this.data.append('side_facing', this.form.side_facing);
+          this.data.append('number_of_adult_male', this.form.number_of_adult_male);
+          this.data.append('number_of_adult_female', this.form.number_of_adult_female);
+          this.data.append('number_of_boys', this.form.number_of_boys);
+          this.data.append('number_of_girls', this.form.number_of_girls);
+          this.data.append('number_of_married_couples', this.form.number_of_married_couples);
+          this.data.append('designer', this.form.designer);
+          this.data.append('constructor', this.form.constructor);
+          this.data.append('septic_tank', this.form.septic_tank);
+          this.data.append('grease_trap', this.form.grease_trap);
+          this.data.append('rain_water_managment', this.form.rain_water_managment);
+          this.data.append('kloset_leher_angsa', this.form.kloset_leher_angsa);
+          this.data.append('image', this.images);
+          this.data.append('polygons', JSON.stringify(this.paths));
+        // payload = {
+        //   identity: this.form.identity,
+        //   fillColor: this.options.fillColor,
+        //   strokeColor: this.options.strokeColor,
+        //   owner_id: this.$route.params.id,
+        //   address : this.form.identity,
+        //   construction_year : this.form.construction_year,
+        //   land_size : this.form.land_size,
+        //   construction_size : this.form.construction_size,
+        //   floor_size : this.form.floor_size,
+        //   floors_number : this.form.floors_number,
+        //   side_facing : this.form.side_facing,
+        //   number_of_adult_male : this.form.number_of_adult_male,
+        //   number_of_adult_female : this.form.number_of_adult_female,
+        //   number_of_boys : this.form.number_of_boys,
+        //   number_of_girls : this.form.number_of_girls,
+        //   number_of_married_couples : this.form.number_of_married_couples,
+        //   designer : this.form.designer,
+        //   constructor : this.form.constructor,
+        //   septic_tank : this.form.septic_tank,
+        //   grease_trap : this.form.grease_trap,
+        //   rain_water_managment : this.form.rain_water_managment,
+        //   kloset_leher_angsa : this.form.kloset_leher_angsa,
+        //   polygons: this.paths
+        // }
       }
       
       // this.form.owner_id = this.$route.params.id;
       if (this.typeInput === 'new') {
         var uri = this.$apiUrl + '/house'
       } else {
-        var uri = this.$apiUrl + '/house/'+this.$route.params.land;
+        var uri = this.$apiUrl + '/house/'+this.$route.params.house;
+      }
+      this.$http.post(uri,this.data,config).then(response =>{
+        this.snackbar = true; //mengaktifkan snackbar
+        this.color = 'green'; //memberi warna snackbar
+        this.text = 'Berhasil'; //memasukkan pesan ke snackbar
+        this.e1=4
+        this.idHouse=response.data.data.id;
+        // this.$router.push({ name : 'ownerDetail',params:{id: this.$route.params.id}})
+        }).catch(error =>{
+        this.snackbar = true;
+        this.text = error.response.data.errors;
+        this.color = 'red';
+        this.load = false;
+      })
+    },
+    storeRoom(){
+      var config = {
+          headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+      }
+      var payload 
+    
+      payload = {
+        category : this.form2.category,
+        size : this.form2.size,
+        artificial_light : this.form2.artificial_light,
+        artificial_cooler : this.form2.artificial_cooler,
+        house_id : this.idHouse,
+        windows : this.windows
+      }      
+      // this.form.owner_id = this.$route.params.id;
+      if (this.typeInput2 === 'new') {
+        var uri = this.$apiUrl + '/room'
+      } else {
+        var uri = this.$apiUrl + '/room/'+this.idRoom
       }
       this.$http.post(uri,payload,config).then(response =>{
         this.snackbar = true; //mengaktifkan snackbar
         this.color = 'green'; //memberi warna snackbar
         this.text = 'Berhasil'; //memasukkan pesan ke snackbar
-        this.$router.push({ name : 'ownerDetail',params:{id: this.$route.params.id}})
+        this.getRooms();
+        this.dialogRooms = false;
+        this.resetForm2();
+        // this.$router.push({ name : 'ownerDetail',params:{id: this.$route.params.id}})
         }).catch(error =>{
         this.snackbar = true;
-        this.text = error.response.data.message;
+        this.text = error.response.data.errors;
         this.color = 'red';
         this.load = false;
       })
+    },
+    submitWindow()
+    {
+        if(this.typeInput3=='new')
+        {
+          this.windows.push(JSON.parse(JSON.stringify(this.form3)))
+        }
+        else{
+          console.log("ioi")
+          var index = this.windows.indexOf(this.item);
+          this.windows[index].type=this.form3.type
+          this.windows[index].placement=this.form3.placement
+          this.windows[index].size=this.form3.size
+        }
+
+        this.addWindow=false
+        this.resetForm3()
+    },
+    deleteWindow(item)
+    {
+        var index = this.windows.indexOf(item);
+        this.windows.splice(index, 1);
+    },
+    editWindow(item)
+    {
+        this.form3=item
+        this.item=item
+        this.typeInput3="edit"
+        this.addWindow=true
+    },
+    editRoom(id)
+    {
+      this.typeInput2="edit"
+      this.idRoom=id
+      this.getRoomData()
+      this.dialogRooms=true
+    },
+    resetForm2()
+    {
+      this.form2 = {
+          category : null,
+          size : null,
+          artificial_light : null,
+          artificial_cooler : null,
+          windows : [],
+      }
+      this.windows=[]
+    },
+    resetForm3()
+    {
+      this.form3 = {
+          type : null,
+          size : null,
+          placement : null,
+      }
     },
     getPostData(){
         var config = {
@@ -471,9 +903,11 @@ export default {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }
-        this.$http.get(this.$apiUrl + '/land/'+this.$route.params.land,config).then(response =>{
+        this.$http.get(this.$apiUrl + '/house/'+this.$route.params.house,config).then(response =>{
             this.form = response.data.data
             this.paths = response.data.data.polygon.data
+            this.rooms = response.data.data.room.data
+            this.savedImage = response.data.data.image.data
             this.options.fillColor = response.data.data.fillColor
             this.options.strokeColor = response.data.data.strokeColor
             if(response.data.data.polygon.data.length>0)
@@ -486,20 +920,118 @@ export default {
             }
         })
     },
+    getRoomData()
+    {
+        var config = {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }
+        this.$http.get(this.$apiUrl + '/room/'+this.idRoom,config).then(response =>{
+            this.form2 = response.data.data
+            this.windows = response.data.data.window.data
+        })
+    },
+    deleteImage(id)
+    {
+        var config = {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }
+        this.$http.delete(this.$apiUrl + '/house/image/'+id,config).then(response =>{
+            this.getPostData()
+        })
+    },
+    deleteRoom(id)
+    {
+        var config = {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }
+        this.$http.delete(this.$apiUrl + '/room/'+id,config).then(response =>{
+            this.getRooms()
+        })
+    },
+    getRooms(){
+        var config = {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }
+        this.$http.get(this.$apiUrl + '/house/room/'+this.idHouse,config).then(response =>{
+            this.rooms = response.data.data
+        })
+    },
+    uploadImg (e) {
+      var file = e.target.files[0]
+      if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
+        alert('Anda hanya diperbolehkan mengupload foto/gambar')
+        return false
+      }
+      var reader = new FileReader()
+      reader.onload = (e) => {
+        let data
+        if (typeof e.target.result === 'object') {
+          data = window.URL.createObjectURL(new Blob([e.target.result]))
+        } else {
+          data = e.target.result
+        }
+        
+        this.img = data
+        this.thumbnail.display=data
+        // this.thumbnails.push(data)
+      }
+
+      reader.readAsArrayBuffer(file)
+      var photo;
+      var reader = new FileReader();
+      reader.readAsDataURL(file); 
+      reader.onload = (e) => {
+          var base64data = reader.result;
+          this.thumbnail.base64 = reader.result;  
+          this.images.push(reader.result);
+          console.log(base64data);
+      }
+      setTimeout(() => {  this.thumbnails.push(JSON.parse(JSON.stringify(this.thumbnail))) }, 500);
+      
+      // reader.onloadend = function() {
+      //     var base64data = reader.result;   
+      //     this.image.push(reader.result);
+      //     console.log(base64data);
+      // }      
+    },
+    clear (item) {
+      var index = this.thumbnails.indexOf(item.display);
+      this.thumbnails.splice(index, 1);
+      var index = this.images.indexOf(item.base64);
+      this.images.splice(index, 1);
+    },
     async getAllData(){
         var config = {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }
-        await this.$http.get(this.$apiUrl + '/land',config).then(response =>{
+        await this.$http.get(this.$apiUrl + '/owner-land/'+this.$route.params.id,config).then(response =>{
             this.lands = response.data.data
         })
     },
+    async getHouseData(){
+        var config = {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }
+        await this.$http.get(this.$apiUrl + '/owner-house/'+this.$route.params.id,config).then(response =>{
+            this.houses = response.data.data
+        })
+    },
     updateEdited(mvcArray) {
-      for( var i = 0; i < this.lands.length; i++){ 
-        if ( this.lands[i].id == this.$route.params.land) {
-          this.lands.splice(i, 1); 
+      for( var i = 0; i < this.houses.length; i++){ 
+        if ( this.houses[i].id == this.$route.params.house) {
+          this.houses.splice(i, 1); 
         }
       }
       let paths = [];
@@ -547,10 +1079,10 @@ export default {
       // {lat:-7.780047, lng: 110.415957 },{lat:-7.780047, lng: 110.417957 },{lat:-7.778047, lng: 110.417957 },{lat:-7.778047, lng: 110.415957 } 
       this.marker=false
       this.paths=[]
-      this.paths.push({lat : this.center.lat - 0.001, lng : this.center.lng - 0.001})
-      this.paths.push({lat : this.center.lat - 0.001, lng : this.center.lng + 0.001})
-      this.paths.push({lat : this.center.lat + 0.001, lng : this.center.lng + 0.001})
-      this.paths.push({lat : this.center.lat + 0.001, lng : this.center.lng - 0.001})
+      this.paths.push({lat : this.center.lat - 0.0001, lng : this.center.lng - 0.0001})
+      this.paths.push({lat : this.center.lat - 0.0001, lng : this.center.lng + 0.0001})
+      this.paths.push({lat : this.center.lat + 0.0001, lng : this.center.lng + 0.0001})
+      this.paths.push({lat : this.center.lat + 0.0001, lng : this.center.lng - 0.0001})
     },
     setPlace(place) {
 			this.center.lat =  place.geometry.location.lat()
@@ -558,7 +1090,7 @@ export default {
 		},
   },
   mounted(){
-      this.getAllData()
+      this.getHouseData()
       if (this.$route.params.house){
           this.title = "UBAH DATA RUMAH"
         //   this.links.push({text: this.$route.params.slug, disabled: false, to:{name: 'DetailEvent', params:{slug: this.$route.params.slug}}})
@@ -602,6 +1134,52 @@ export default {
 
     color: #1D1D1D;
   }
+}
+.title-photo{
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 18px;
+  margin-bottom: 12px;
+  /* identical to box height */
+
+  color: #979797;
+}
+.box-photo{
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid rgba(165, 165, 165, 0.25);
+  box-sizing: border-box;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.content-photo{
+  width: 100%;
+  height: 80px;
+  background: #F8F8F8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.uploadButton{
+  position:absolute; 
+  opacity : 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+.iconCancel{
+  position: absolute !important;
+  right: 0;
+  top: 0;
+  float: right;
+  z-index: 1;
 }
 </style>
 
