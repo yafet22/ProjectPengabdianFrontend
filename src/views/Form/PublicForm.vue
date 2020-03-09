@@ -74,6 +74,13 @@
             light
         ></v-text-field>
         <v-select
+        v-model="form.disaster_status"
+        :items="disasterStatus"
+        label="Status Kebencanaan"
+        outlined
+        light
+        ></v-select>
+        <v-select
         v-model="form.type"
         :items="types"
         label="Jenis Bangunan"
@@ -279,6 +286,7 @@ export default {
            width_of_building_entrance : null,
            fillColor : null,
            strokeColor : null,
+           disaster_status : null,
         }, 
         lands:[],
         houses:[],
@@ -303,6 +311,7 @@ export default {
         types : ["Bangunan Publik"],
         functions : ["Kantor Polisi","Balai Desa","Balai Dusun","Balai RT","Balai RW","Puskesmas","Lainnya"],
         date: new Date().toISOString().substr(0, 10),
+        disasterStatus : ["rendah","sedang","tinggi"],
         modal: false,
         snackbar: false, 
         color: null,
@@ -331,6 +340,7 @@ export default {
       {
         payload = {
           identity: this.form.identity,
+          disaster_status : this.form.disaster_status,
           type: this.form.type,
           owner : this.form.owner,
           address : this.form.address,
@@ -352,6 +362,7 @@ export default {
       {
         payload = {
           identity: this.form.identity,
+          disaster_status : this.form.disaster_status,
           type: this.form.type,
           owner : this.form.owner,
           address : this.form.address,

@@ -98,6 +98,13 @@
                 light
             ></v-text-field>
             <v-select
+                v-model="form.disaster_status"
+                :items="disasterStatus"
+                label="Status Kebencanaan"
+                outlined
+                light
+            ></v-select>
+            <v-select
                 v-model="form.construction_year"
                 :items="years"
                 label="Tahun Pembangunan"
@@ -591,6 +598,7 @@ export default {
            fillColor : null,
            strokeColor : null,
            owner_id : null,
+           disaster_status : null,
         },
         form2 : {
           category : null,
@@ -634,6 +642,7 @@ export default {
         windowTypes:["Jendela Hidup","Jendela Mati","Ventilasi"],
         designers : ["Sendiri","Tukang","Arsitek/Teknik Sipil/Kontraktor","Lainnya"],
         designers2 : ["Sendiri","Tukang","Arsitek/Teknik Sipil/Kontraktor","Lainnya"],
+        disasterStatus : ["rendah","sedang","tinggi"],
         choices : ["Ya","Tidak"],
         date: new Date().toISOString().substr(0, 10),
         modal: false,
@@ -682,6 +691,7 @@ export default {
       {
         this.data = new FormData
         this.data.append('identity', this.form.identity);
+        this.data.append('disaster_status', this.form.disaster_status);
         this.data.append('fillColor', this.options.fillColor);
         this.data.append('strokeColor', this.options.strokeColor);
         this.data.append('owner_id',  this.$route.params.id);
@@ -735,6 +745,7 @@ export default {
       {
           this.data = new FormData
           this.data.append('identity', this.form.identity);
+          this.data.append('disaster_status', this.form.disaster_status);
           this.data.append('fillColor', this.options.fillColor);
           this.data.append('strokeColor', this.options.strokeColor);
           this.data.append('owner_id',  this.$route.params.id);

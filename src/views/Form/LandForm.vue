@@ -83,6 +83,20 @@
           light
         ></v-text-field>
         <v-select
+          v-model="form.disaster_status"
+          :items="disasterStatus"
+          label="Status Kebencanaan"
+          outlined
+          light
+        ></v-select>
+        <v-select
+              v-model="form.disaster_status"
+              :items="disasterStatus"
+              label="Status Kebencanaan"
+              outlined
+              light
+          ></v-select>
+        <v-select
         v-model="form.type"
         :items="types"
         label="Jenis Lahan"
@@ -280,6 +294,7 @@ export default {
            strokeColor : null,
            owner_id : null,
            description : null,
+           disaster_status : null,
         }, 
         form2 : {
            amount : null,
@@ -305,6 +320,7 @@ export default {
         options : {strokeColor: '#3F5498',fillColor: '#3F5498',strokeWeight: 1},
         paths: [],
         allPaths: [],
+        disasterStatus : ["rendah","sedang","tinggi"],
         mode: 'hexa',
         marker: false,
         types : ["Pertanian","Kebun","Lahan Kosong","Pekarangan","Lainnya"],
@@ -346,7 +362,8 @@ export default {
           strokeColor: this.options.strokeColor,
           owner_id: this.$route.params.id,
           polygons: this.paths[0],
-          livestocks: this.livestocks
+          livestocks: this.livestocks,
+          disaster_status : this.form.disaster_status
         }
       }
       else if(this.edited==false)
@@ -360,7 +377,8 @@ export default {
           strokeColor: this.options.strokeColor,
           owner_id: this.$route.params.id,
           polygons: this.paths,
-          livestocks: this.livestocks
+          livestocks: this.livestocks,
+          disaster_status : this.form.disaster_status
         }
       }
       
