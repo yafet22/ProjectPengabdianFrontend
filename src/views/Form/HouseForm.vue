@@ -173,6 +173,7 @@
                 prepend-inner-icon="mdi-human-male"
                 color="indigo"
                 light
+                @change="fillPerson()"
             ></v-text-field>
             <v-text-field
                 v-model="form.number_of_adult_female"
@@ -182,6 +183,7 @@
                 prepend-inner-icon="mdi-human-female"
                 color="indigo"
                 light
+                @change="fillPerson()"
             ></v-text-field>
             <v-text-field
                 v-model="form.number_of_boys"
@@ -191,6 +193,7 @@
                 prepend-inner-icon="mdi-human-male-boy"
                 color="indigo"
                 light
+                @change="fillPerson()"
             ></v-text-field>
             <v-text-field
                 v-model="form.number_of_girls"
@@ -200,6 +203,7 @@
                 prepend-inner-icon="mdi-human-male-girl"
                 color="indigo"
                 light
+                @change="fillPerson()"
             ></v-text-field>
             <v-text-field
                 v-model="form.number_of_married_couples"
@@ -210,6 +214,55 @@
                 color="indigo"
                 light
             ></v-text-field>
+            <div class="title-detail" v-if="persons.length>0">
+              Detail Data keluarga
+            </div>
+            <div v-for="(item,index) in persons" :key="index">
+              <div class="title-detail">
+                Orang ke-{{index+1}} 
+              </div>
+              <v-row>
+                  <v-col col="4" style="padding-top:0px;padding-bottom:0px">
+                      <v-select
+                          v-model="item.religion"
+                          :items="religions"
+                          label="Agama"
+                          outlined
+                          light
+                      ></v-select>
+                  </v-col>
+                  <v-col col="4" style="padding-top:0px;padding-bottom:0px">
+                      <v-text-field
+                          v-model="item.age"
+                          height=20
+                          outlined
+                          label="Umur"
+                          prepend-inner-icon="mdi-yoga"
+                          color="indigo"
+                          light
+                      ></v-text-field>
+                  </v-col>
+                  <v-col col="4" style="padding-top:0px;padding-bottom:0px">
+                      <v-select
+                          v-if="item.gender==''"
+                          v-model="item.gender"
+                          :items="genders"
+                          label="Gender"
+                          outlined
+                          light
+                      ></v-select>
+                      <v-select
+                          v-else
+                          v-model="item.gender"
+                          :items="genders"
+                          label="Gender"
+                          outlined
+                          light
+                          disabled
+                      ></v-select>
+                  </v-col>
+              </v-row>
+            </div>
             <div style="display: flex; justify-content: flex-end">
                 <v-btn @click="e1=0" tile small color="#FFFFFF" style="border: 1px solid rgba(151, 151, 151, 0.45);color:#979797;box-sizing: border-box;border-radius: 2px;width: 120px;height: 39px;margin-right:15px" class="elevation-0">
                     Cancel
@@ -585,11 +638,11 @@ export default {
            floor_size : null,
            floors_number : null,
            side_facing : null,
-           number_of_adult_male : null,
-           number_of_adult_female : null,
-           number_of_boys : null,
-           number_of_girls : null,
-           number_of_married_couples : null,
+           number_of_adult_male : 0,
+           number_of_adult_female : 0,
+           number_of_boys : 0,
+           number_of_girls : 0,
+           number_of_married_couples : 0,
            designer : null,
            septic_tank : "Ya",
            grease_trap : "Ya",
@@ -623,10 +676,12 @@ export default {
         idRoom: null,
         categories : ["Ruang Tamu","Kamar Tidur","Kamar Mandi","Dapur","Gudang","Ruang Keluarga","Ruang Makan","Garasi"],
         compass: ["Utara","Barat Laut","Barat","Barat Daya","Selatan","Tenggara","Timur","Timur Laut"], 
+        religions: ["Kristen","Katholik","Islam","Hindu","Budha","Konghucu"], 
         e1:0,
         lands:[],
         houses:[],
         windows:[],
+        persons:[],
         savedImage:[],
         addWindow:false,
         showColor1:false,
@@ -644,6 +699,7 @@ export default {
         designers2 : ["Sendiri","Tukang","Arsitek/Teknik Sipil/Kontraktor","Lainnya"],
         disasterStatus : ["rendah","sedang","tinggi"],
         choices : ["Ya","Tidak"],
+        genders : ["Laki-laki","Perempuan"],
         date: new Date().toISOString().substr(0, 10),
         modal: false,
         snackbar: false, 
@@ -676,9 +732,30 @@ export default {
     years () {
       const year = new Date().getFullYear()
       return Array.from({length: year - 1900}, (value, index) => 1901 + index)
-    }
+    },
+    numberOfPerson(){
+      const sumOfPerson = Number(this.form.number_of_adult_female) + Number(this.form.number_of_adult_male) + Number(this.form.number_of_boys) + Number(this.form.number_of_girls)
+      return sumOfPerson
+    },
+    numberOfMale(){
+      const sumOfPerson = Number(this.form.number_of_adult_male) + Number(this.form.number_of_boys)
+      return sumOfPerson
+    },
+    numberOfFemale(){
+      const sumOfPerson = Number(this.form.number_of_adult_female) + Number(this.form.number_of_girls)
+      return sumOfPerson
+    },
   },
   methods:{
+    fillPerson(){
+      this.persons = []
+      for( var i = 0; i < this.numberOfMale; i++){ 
+        this.persons.push({ religion : "", age : 0, gender : "Laki-laki"})
+      }
+      for( var i = 0; i < this.numberOfFemale; i++){ 
+        this.persons.push({ religion : "", age : 0, gender : "Perempuan"})
+      }
+    },
     store(){
       var config = {
           headers: {
@@ -715,6 +792,7 @@ export default {
         this.data.append('kloset_leher_angsa', this.form.kloset_leher_angsa);
         this.data.append('image', this.images);
         this.data.append('polygons',  JSON.stringify(this.paths[0]));
+        this.data.append('persons',JSON.stringify(this.persons))
         // payload = {
         //   identity: this.form.identity,
         //   fillColor: this.options.fillColor,
@@ -769,6 +847,7 @@ export default {
           this.data.append('kloset_leher_angsa', this.form.kloset_leher_angsa);
           this.data.append('image', this.images);
           this.data.append('polygons', JSON.stringify(this.paths));
+          this.data.append('persons',JSON.stringify(this.persons))
         // payload = {
         //   identity: this.form.identity,
         //   fillColor: this.options.fillColor,
@@ -918,6 +997,7 @@ export default {
             this.form = response.data.data
             this.paths = response.data.data.polygon.data
             this.rooms = response.data.data.room.data
+            this.persons = response.data.data.person.data
             this.savedImage = response.data.data.image.data
             this.options.fillColor = response.data.data.fillColor
             this.options.strokeColor = response.data.data.strokeColor
@@ -1120,6 +1200,14 @@ export default {
 <style lang="scss">
 .v-icon {
     color: #DADADA !important;
+}
+.title-detail{
+  font-family: Roboto; //harusnya poppins
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 47px;
+  color:black;
 }
 .form-header{
   background-color:#DADADA;
