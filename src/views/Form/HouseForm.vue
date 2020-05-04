@@ -122,7 +122,7 @@
                 v-model="form.land_size"
                 height=20
                 outlined
-                label="Luas Tanah"
+                label="Luas Tanah (meter persegi)"
                 prepend-inner-icon="mdi-map-outline"
                 color="indigo"
                 light
@@ -131,7 +131,7 @@
                 v-model="form.construction_size"
                 height=20
                 outlined
-                label="Luas Bangunan"
+                label="Luas Bangunan (meter persegi)"
                 prepend-inner-icon="mdi-office-building"
                 color="indigo"
                 light
@@ -140,7 +140,7 @@
                 v-model="form.floor_size"
                 height=20
                 outlined
-                label="Luas Lantai"
+                label="Luas Lantai (meter persegi)"
                 prepend-inner-icon="mdi-home-floor-l"
                 color="indigo"
                 light
@@ -384,7 +384,7 @@
 
                     <v-list-item-content>
                         <v-list-item-title>{{ room.category }}</v-list-item-title>
-                        <v-list-item-subtitle>{{ room.size }}</v-list-item-subtitle>
+                        <v-list-item-subtitle style="margin-top:8px">{{ room.size }} m<sup>2</sup></v-list-item-subtitle>
                     </v-list-item-content>
 
                     <v-list-item-action>
@@ -524,7 +524,7 @@
               v-model="form2.size"
               height=20
               outlined
-              label="Luas Ruangan"
+              label="Luas Ruangan (meter persegi)"
               prepend-inner-icon="mdi-border-all-variant"
               color="indigo"
               light
@@ -603,7 +603,7 @@
                 v-model="form3.size"
                 height=20
                 outlined
-                label="Luas"
+                label="Luas (meter persegi)"
                 prepend-inner-icon="mdi-border-all-variant"
                 color="indigo"
                 light

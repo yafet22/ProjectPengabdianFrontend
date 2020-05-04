@@ -79,7 +79,7 @@
           v-model="form.size"
           height=20
           outlined
-          label="Luas Tanah"
+          label="Luas Tanah (meter persegi)"
           prepend-inner-icon="mdi-image-size-select-small"
           color="indigo"
           light
@@ -477,7 +477,7 @@ export default {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }
-        await this.$http.get(this.$apiUrl + '/owner-land/'+this.$route.params.id,config).then(response =>{
+        await this.$http.get(this.$apiurl + '/land',config).then(response =>{
             this.lands = response.data.data
         })
     },

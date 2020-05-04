@@ -77,7 +77,7 @@
           v-model="form.size"
           height=20
           outlined
-          label="Luas Tanah"
+          label="Luas Tanah (meter persegi)"
           prepend-inner-icon="mdi-image-size-select-small"
           color="indigo"
           light
@@ -89,13 +89,6 @@
           outlined
           light
         ></v-select>
-        <v-select
-              v-model="form.disaster_status"
-              :items="disasterStatus"
-              label="Status Kebencanaan"
-              outlined
-              light
-          ></v-select>
         <v-select
         v-model="form.type"
         :items="types"
