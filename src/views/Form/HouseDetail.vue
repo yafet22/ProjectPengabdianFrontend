@@ -2,6 +2,8 @@
   <div style="width: 100%">
       <h2 style="text-align:center">Data Rumah</h2>
       <gmap-map :center="center" :zoom="18" :options="optionmaps " style="width: 100%;margin-top:16px;height:200px" @click="markerPlace($event)">
+        <gmap-polygon :options="optionsConstruction" style="z-index:100" :paths="constructionPaths" :draggable="false" :editable="false" @paths_changed="updateEditedConstruction($event)">
+        </gmap-polygon>
         <gmap-polygon :options="options" :paths="paths" :draggable="false" :editable="false">
         </gmap-polygon>
       </gmap-map>
@@ -269,7 +271,9 @@ export default {
         center: { lat:-7.779047, lng: 110.416957 },
         marker: false,
         options : {strokeColor: '#3F5498',fillColor: '#3F5498',strokeWeight: 1},
+        optionsConstruction : {strokeColor: '#98963F',fillColor: '#98963F',strokeWeight: 1},
         paths: [],
+        constructionPaths: [],
         rooms: [],
         windows: [],
         idRoom : null,
@@ -286,6 +290,7 @@ export default {
         this.$http.get(this.$apiUrl + '/house/'+this.$route.params.id,config).then(response =>{
             this.data = response.data.data
             this.paths = response.data.data.polygon.data
+            this.constructionPaths = response.data.data.polygon_building.data
             this.rooms = response.data.data.room.data
             this.options.fillColor = response.data.data.fillColor
             this.options.strokeColor = response.data.data.strokeColor
