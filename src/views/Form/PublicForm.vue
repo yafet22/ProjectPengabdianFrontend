@@ -64,13 +64,18 @@
     <v-btn :disabled="isValid" tile small color="warning" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px"  @click="setConstruction();isConstructionAvail=true" class="elevation-0">
       Set Bangunan
     </v-btn>
-    <v-btn tile small color="red" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px" @click="clearMarker()" class="elevation-0">
-      Clear
-    </v-btn>
     <v-btn
       tile small color="teal" class="white--text elevation-0" @click="dialog=true" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-left:auto"
     >
       <v-icon color="white">mdi-format-color-fill</v-icon>
+    </v-btn>
+    </div>
+    <div v-if="mapMode==true" style="display: flex;">
+    <v-btn tile small color="red" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px" @click="clearMarker()" class="elevation-0">
+      Clear Tanah
+    </v-btn>
+    <v-btn tile small color="black" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px" @click="clearMarkerConstruction()" class="elevation-0">
+      Clear Bangunan
     </v-btn>
     </div>
     <v-btn v-if="mapMode==false" @click="mapMode=true" block dark tile small color="#3A4D8C" style="margin-bottom:16px;border-radius: 2px;width: 120px;height: 39px;" class="elevation-0">
@@ -710,6 +715,11 @@ export default {
       }
       this.marker=true
       this.paths=[]
+      this.constructionPaths=[]
+    },
+    clearMarkerConstruction()
+    {
+      this.constructionPaths=[]
     },
     // setMarker()
     // {

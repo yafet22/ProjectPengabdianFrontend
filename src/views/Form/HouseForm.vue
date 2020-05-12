@@ -64,13 +64,21 @@
     <v-btn :disabled="isValid" tile small color="warning" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px"  @click="setConstruction();isConstructionAvail=true" class="elevation-0">
       Set Lantai
     </v-btn>
-    <v-btn tile small color="red" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px" @click="clearMarker()" class="elevation-0">
+    <!-- <v-btn tile small color="red" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px" @click="clearMarker()" class="elevation-0">
       Clear
-    </v-btn>
+    </v-btn> -->
     <v-btn
       tile small color="teal" class="white--text elevation-0" @click="dialog=true" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-left:auto"
     >
       <v-icon color="white">mdi-format-color-fill</v-icon>
+    </v-btn>
+    </div>
+    <div v-if="mapMode==true" style="display: flex;">
+    <v-btn tile small color="red" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px" @click="clearMarker()" class="elevation-0">
+      Clear Tanah
+    </v-btn>
+    <v-btn tile small color="black" style="height:40px;color:#FFFFFF;margin-bottom:16px;margin-right:8px" @click="clearMarkerConstruction()" class="elevation-0">
+      Clear Lantai
     </v-btn>
     </div>
     <v-btn v-if="mapMode==false" @click="mapMode=true" block dark tile small color="#3A4D8C" style="margin-bottom:16px;border-radius: 2px;width: 120px;height: 39px;" class="elevation-0">
@@ -256,7 +264,47 @@
                 Orang ke-{{index+1}} 
               </div>
               <v-row>
-                  <v-col col="4" style="padding-top:0px;padding-bottom:0px">
+                  <v-col col="6" style="padding-top:0px;padding-bottom:0px">
+                    <v-text-field
+                        v-model="item.name"
+                        height=20
+                        outlined
+                        label="Nama"
+                        prepend-inner-icon="mdi-yoga"
+                        color="indigo"
+                        light
+                    ></v-text-field>
+                  </v-col>
+                  <v-col col="6" style="padding-top:0px;padding-bottom:0px">
+                      <v-dialog
+                        ref="dialog"
+                        v-model="modal"
+                        :return-value.sync="item.date_of_birth"
+                        persistent
+                        width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="item.date_of_birth"
+                            outlined
+                            label="Tanggal Lahir"
+                            prepend-inner-icon="mdi-calendar-range"
+                            color="indigo"
+                            light
+                            readonly
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker v-model="item.date_of_birth" scrollable>
+                          <v-spacer></v-spacer>
+                          <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
+                          <v-btn text color="primary" @click="$refs.dialog[index].save(item.date_of_birth)">OK</v-btn>
+                        </v-date-picker>
+                      </v-dialog>
+                  </v-col>
+              </v-row>
+              <v-row>
+                  <v-col col="6" style="padding-top:0px;padding-bottom:0px">
                       <v-select
                           v-model="item.religion"
                           :items="religions"
@@ -265,7 +313,7 @@
                           light
                       ></v-select>
                   </v-col>
-                  <v-col col="4" style="padding-top:0px;padding-bottom:0px">
+                  <!-- <v-col col="4" style="padding-top:0px;padding-bottom:0px">
                       <v-text-field
                           v-model="item.age"
                           height=20
@@ -275,8 +323,8 @@
                           color="indigo"
                           light
                       ></v-text-field>
-                  </v-col>
-                  <v-col col="4" style="padding-top:0px;padding-bottom:0px">
+                  </v-col> -->
+                  <v-col col="6" style="padding-top:0px;padding-bottom:0px">
                       <v-select
                           v-if="item.gender==''"
                           v-model="item.gender"
@@ -891,11 +939,14 @@ export default {
     fillPerson(){
       this.persons = []
       for( var i = 0; i < this.numberOfMale; i++){ 
-        this.persons.push({ religion : "", age : 0, gender : "Laki-laki"})
+        this.persons.push({ religion : "", age : 0, gender : "Laki-laki", name : ""})
       }
       for( var i = 0; i < this.numberOfFemale; i++){ 
-        this.persons.push({ religion : "", age : 0, gender : "Perempuan"})
+        this.persons.push({ religion : "", age : 0, gender : "Perempuan", name : ""})
       }
+    },
+    save(time) {
+      this.$refs.dialog.save(time)
     },
     store(){
       var config = {
@@ -1531,6 +1582,11 @@ export default {
       }
       this.marker=true
       this.paths=[]
+      this.constructionPaths=[]
+    },
+    clearMarkerConstruction()
+    {
+      this.constructionPaths=[]
     },
     // setMarker()
     // {
