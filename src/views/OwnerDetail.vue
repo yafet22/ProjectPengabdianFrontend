@@ -37,7 +37,7 @@
                         <v-icon large color="indigo">mdi-home</v-icon>
                     </v-list-item-icon>
 
-                    <v-list-item-content @click="$router.push({ name : 'houseDetail',params:{id: house.id}})">
+                    <v-list-item-content @click="$router.push({ name : 'houseQuality',params:{id: house.id}})">
                         <v-list-item-title>{{ house.identity }}</v-list-item-title>
                         <v-list-item-subtitle>{{ house.address }}</v-list-item-subtitle>
                     </v-list-item-content>

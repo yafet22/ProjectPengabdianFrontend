@@ -115,10 +115,28 @@ const routes = [
         component: formView('HouseForm')
       },
       {
-        name: 'houseDetail',
-        path: 'house-detail/:id',
+        path: 'house-detail',
+        component: formView('HouseDetail'),
+        children: [
+          {
+            name: 'houseQuality',
+            path: 'quality/:id',
+            meta: { requiresAuth: true },
+            component: formView('HouseQuality')
+          },
+          {
+            name: 'houseData',
+            path: 'data/:id',
+            meta: { requiresAuth: true },
+            component: formView('HouseData')
+          },
+        ]
+      },
+      {
+        name: 'rumahSehatDetail',
+        path: 'rumah-sehat/:type/:id',
         meta: { requiresAuth: true },
-        component: formView('HouseDetail')
+        component: formView('RumahSehatDetail')
       },
       {
         name: 'houseFormEdit',
