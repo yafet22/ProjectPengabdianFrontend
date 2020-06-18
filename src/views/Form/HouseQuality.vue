@@ -135,7 +135,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'kamartidur'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
                     <v-card
@@ -158,7 +158,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'kamartidur'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
 
@@ -183,7 +183,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'kamarmandi'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
                     <v-card
@@ -207,7 +207,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'kamarmandi'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
 
@@ -232,7 +232,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'ruangkeluarga'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
                     <v-card
@@ -256,7 +256,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'ruangkeluarga'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-card-text>
@@ -408,7 +408,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'kloset'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
                     <v-card
@@ -431,7 +431,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'kloset'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
 
@@ -456,7 +456,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'septictank'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
                     <v-card
@@ -480,7 +480,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'septictank'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
 
@@ -505,7 +505,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'greasetrap'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
                     <v-card
@@ -529,7 +529,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'greasetrap'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
 
@@ -554,7 +554,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'rainwater'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
                     <v-card
@@ -578,7 +578,7 @@
                         </v-row>
                         <hr style="margin-left: 18px;margin-right: 18px;opacity: 50%;">
                         <v-card-actions style="padding-right:16px;padding-left:16px">
-                            <v-btn text>Detail</v-btn>
+                            <v-btn text @click="$router.push({ name : 'rumahSehatDetail',params:{id: id,type:'rainwater'}})">Detail</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-card-text>
