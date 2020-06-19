@@ -777,6 +777,191 @@
                 </div>
             </div>
         </div>
+        <div v-else-if="type=='pencahayaan'" style="margin-bottom:64px">
+            <div style="text-align:center;margin-top:16px">
+                <span style="display:inline-block;border-bottom:1px solid #3A4D8C;border-bottom-width: medium;;padding-bottom:2px;color:#3A4D8C;">
+                    <h1 style="">Pencahayaan {{data.data_ruangan[index].category}}</h1>
+                </span>
+            </div>
+            <div style="margin-top:28px">
+                <v-card
+                    color="green"
+                    class="elevation-0"
+                    dark
+                    v-if="data.data_ruangan[index].kecukupan_cahaya"
+                >
+                <v-card-title class="headline">Mencukupi</v-card-title>
+
+                <v-card-subtitle style="font-weight:bold;font-size:18px">
+                    Jendela hidup dan jendela mati memiliki luas sama atau lebih besar dari 10% luas ruangan
+                </v-card-subtitle>
+                </v-card>
+                <v-card
+                    color="red"
+                    class="elevation-0"
+                    dark
+                    v-else
+                >
+                <v-card-title class="headline">Tidak Mencukupi</v-card-title>
+
+                <v-card-subtitle style="font-weight:bold;font-size:18px">
+                   Jendela hidup dan jendela mati memiliki luas lebih kecil dari 10% luas ruangan
+                </v-card-subtitle>
+                </v-card>
+                <div v-if="data.data_ruangan[index].kecukupan_cahaya" style="margin-top:20px;text-align:center">
+                    <p style="font-size:24px;font-weight:bold">Rumah Anda SEHAT secara pencahayaan karena jendela hidup dan jendela mati memiliki luas sama dengan / lebih besar dari 10% ruangan</p>
+                    <div style="background-color:#FF9800;display: block;margin-left: 80px;margin-right: 80px;color:white;padding:8px;font-weight:bold">
+                        Standar memenuhi {{data.data_ruangan[0].standar_pencahayaan}} m<sup>2</sup> 
+                    </div>
+                </div>
+                <div v-else style="margin-top:20px;text-align:center">
+                    <p style="font-size:24px;font-weight:bold">Rumah Anda TIDAK SEHAT secara pencahayaan karena jendela hidup dan jendela mati memiliki luas lebih kecil dari 10% ruangan</p>
+                    <div style="background-color:#FF9800;display: block;margin-left: 80px;margin-right: 80px;color:white;padding:8px;font-weight:bold">
+                        Standar memenuhi {{data.data_ruangan[0].standar_pencahayaan}} m<sup>2</sup> 
+                    </div>
+                </div>
+            </div>  
+            <div style="text-align:center;color:#FF9800;margin-top:16px">
+                <h2>Luas Ruangan</h2>
+                <h3>{{data.data_ruangan[index].luas_ruangan}} m<sup>2</sup></h3>
+                <h2>Luas Jendela Hidup dan Jendela Mati</h2>
+                <h3>{{data.data_ruangan[index].luas_jendela}} m<sup>2</sup></h3>
+            </div>
+            <div class="suggestion-box">
+                <div class="suggestion-header">
+                    <h2>Saran Tindakan</h2>
+                </div>
+                <div v-if="data.data_ruangan[index].kecukupan_cahaya" class="suggestion-body">
+                    <ul style="list-style-type: square;">
+                        <li>
+                           Rumah perlu mendapat cahaya matahari langsung pada ruang-ruangnya antara 08.00 sampai pukul 16.00.
+                        </li>
+                        <li>
+                           Minimal 1 jam setiap hari, ruangan mendapat sinar matahari.
+                        </li>
+                        <li>
+                           Syarat minimal adalah luas jendela 10% dari luas ruangan.
+                        </li> 
+                        <li>
+                           Hemat energi karena pada pagi dan siang tidak memerlukan cahaya buatan (lampu).
+                        </li>      
+                    </ul>
+                </div>
+                <div v-else class="suggestion-body">
+                    <ul style="list-style-type: square;">
+                        <li>
+                            Pemasangan genteng kaca atau penutup atap transparan lain.
+                        </li>
+                        <li>
+                            Dinding rumah warna dicat dengan warna terang.
+                        </li>
+                        <li>
+                            Tata letak perabot tidak menghalangi cahaya.
+                        </li>   
+                        <li>
+                            Bukaan jendela pada dinding yang terkena sinar matahari.
+                        </li>     
+                    </ul>
+                </div>
+            </div>
+            <div class="negative-box">
+                <div class="negative-header">
+                    <h2>Efek Tidak Mencukupi</h2>
+                </div>
+                <div class="negative-body">
+                    <ul style="list-style-type: square;">
+                        <li>
+                            Kelembaban ruang meningkat dan menimbulkan bakteri dan jamur yang dapat menyerang kulit dan organ tubuh(panu, kadas, TBC, influenza).
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="type=='penghawaan'" style="margin-bottom:64px">
+            <div style="text-align:center;margin-top:16px">
+                <span style="display:inline-block;border-bottom:1px solid #3A4D8C;border-bottom-width: medium;;padding-bottom:2px;color:#3A4D8C;">
+                    <h1 style="">Penghawaan {{data.data_ruangan[index].category}}</h1>
+                </span>
+            </div>
+            <div style="margin-top:28px">
+                <v-card
+                    color="green"
+                    class="elevation-0"
+                    dark
+                    v-if="data.data_ruangan[index].kecukupan_penghawaan"
+                >
+                <v-card-title class="headline">Mencukupi</v-card-title>
+
+                <v-card-subtitle style="font-weight:bold;font-size:18px">
+                    Jendela hidup dan ventilasi memiliki luas sama atau lebih besar dari 10% luas ruangan
+                </v-card-subtitle>
+                </v-card>
+                <v-card
+                    color="red"
+                    class="elevation-0"
+                    dark
+                    v-else
+                >
+                <v-card-title class="headline">Tidak Mencukupi</v-card-title>
+
+                <v-card-subtitle style="font-weight:bold;font-size:18px">
+                   Jendela hidup dan ventilasi memiliki luas lebih kecil dari 10% luas ruangan
+                </v-card-subtitle>
+                </v-card>
+                <div v-if="data.data_ruangan[index].kecukupan_penghawaan" style="margin-top:20px;text-align:center">
+                    <p style="font-size:24px;font-weight:bold">Rumah Anda SEHAT secara penghawaan karena jendela hidup dan ventilasi memiliki luas sama dengan / lebih besar dari 10% ruangan</p>
+                    <div style="background-color:#FF9800;display: block;margin-left: 80px;margin-right: 80px;color:white;padding:8px;font-weight:bold">
+                        Standar memenuhi {{data.data_ruangan[0].standar_penghawaan}} m<sup>2</sup> 
+                    </div>
+                </div>
+                <div v-else style="margin-top:20px;text-align:center">
+                    <p style="font-size:24px;font-weight:bold">Rumah Anda TIDAK SEHAT secara penghawaan karena jendela hidup dan ventilasi memiliki luas lebih kecil dari 10% ruangan</p>
+                    <div style="background-color:#FF9800;display: block;margin-left: 80px;margin-right: 80px;color:white;padding:8px;font-weight:bold">
+                        Standar memenuhi {{data.data_ruangan[0].standar_penghawaan}} m<sup>2</sup> 
+                    </div>
+                </div>
+            </div>  
+            <div style="text-align:center;color:#FF9800;margin-top:16px">
+                <h2>Luas Ruangan</h2>
+                <h3>{{data.data_ruangan[index].luas_ruangan}} m<sup>2</sup></h3>
+                <h2>Luas Jendela Hidup dan Ventilasi</h2>
+                <h3>{{data.data_ruangan[index].luas_penghawaan}} m<sup>2</sup></h3>
+            </div>
+            <div class="suggestion-box">
+                <div class="suggestion-header">
+                    <h2>Saran Tindakan</h2>
+                </div>
+                <div v-if="data.data_ruangan[index].kecukupan_penghawaan" class="suggestion-body">
+                    <ul style="list-style-type: square;">
+                        <li>
+                           Bukalah jendela saat udara bergerak dari tempat yang bersih dan segar.
+                        </li>
+                        <li>
+                           Jendela dapat diberi pelapis kasa yang bisa dibuka agar serangga tidak masuk.
+                        </li>     
+                    </ul>
+                </div>
+                <div v-else class="suggestion-body">
+                    <ul style="list-style-type: square;">
+                        <li>
+                            Tambahkan bukaan sesuai dengan arah angin bersih yang masuk ke dalam rumah.
+                        </li>   
+                    </ul>
+                </div>
+            </div>
+            <div class="negative-box">
+                <div class="negative-header">
+                    <h2>Efek Tidak Mencukupi</h2>
+                </div>
+                <div class="negative-body">
+                    <ul style="list-style-type: square;">
+                        <li>
+                            Udara di dalam ruang akan menjadi gerah, lembab, atau bau sehingga mengundang bibit penyakit.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
        <!-- <v-card
             class="mx-auto"
             color="#26c6da"
@@ -818,6 +1003,16 @@ export default {
                 jumlah_seharusnya : 0,
                 kecukupan_kamar_tidur : true,
            },
+           data_ruangan : [
+               {
+                    category : null,
+                    luas_ruangan : 0,
+                    luas_jendela : 0,
+                    luas_penghawaan : 0,
+                    standar_pencahayaan : 0,
+                    standar_penghawaan : 0,
+               }
+           ]
         },
         optionmaps : {
           scrollwheel: true, mapTypeControl: false, draggable: true, disableDoubleClickZoom: true,zoomControl: false                      
@@ -835,7 +1030,8 @@ export default {
         dialog : false,
         houseID : null,
         type : null,
-        isAppropriate : false
+        isAppropriate : false,
+        index : 0,
     }
   },
   methods:{
@@ -854,6 +1050,7 @@ export default {
     this.getRumahSehatData()
     this.houseID = this.$route.params.id;
     this.type=this.$route.params.type;
+    this.index=this.$route.params.index;
     // this.isAppropriate=this.$route.params.result
   },
 }

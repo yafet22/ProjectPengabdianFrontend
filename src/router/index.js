@@ -134,7 +134,7 @@ const routes = [
       },
       {
         name: 'rumahSehatDetail',
-        path: 'rumah-sehat/:type/:id',
+        path: 'rumah-sehat/:type/:index/:id',
         meta: { requiresAuth: true },
         component: formView('RumahSehatDetail')
       },

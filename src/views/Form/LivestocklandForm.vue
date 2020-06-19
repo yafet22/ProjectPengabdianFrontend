@@ -84,6 +84,13 @@
           color="indigo"
           light
         ></v-text-field>
+        <v-select
+          v-model="form.disaster_status"
+          :items="disasterStatus"
+          label="Status Kebencanaan"
+          outlined
+          light
+        ></v-select>
         <!-- <v-select
         v-model="form.type"
         :items="types"
@@ -282,12 +289,14 @@ export default {
            strokeColor : null,
            owner_id : null,
            description : null,
+           disaster_status : null
         }, 
         form2 : {
            amount : null,
            species : null,
            gender : null,
         }, 
+        disasterStatus : ["rendah","sedang","tinggi"],
         isFormValid: false, 
         lands:[],
         houses:[],
@@ -343,6 +352,7 @@ export default {
           identity: this.form.identity,
           type: "Peternakan",
           size: this.form.size,
+          disaster_status: this.form.disaster_status,
           description: this.form.description,
           fillColor: this.options.fillColor,
           strokeColor: this.options.strokeColor,
@@ -358,6 +368,7 @@ export default {
           type: "Peternakan",
           size: this.form.size,
           description: this.form.description,
+          disaster_status: this.form.disaster_status,
           fillColor: this.options.fillColor,
           strokeColor: this.options.strokeColor,
           owner_id: this.$route.params.id,
@@ -365,7 +376,7 @@ export default {
           livestocks: this.livestocks
         }
       }
-      
+      console.log(payload)
       // this.form.owner_id = this.$route.params.id;
       if (this.typeInput === 'new') {
         var uri = this.$apiUrl + '/land'
