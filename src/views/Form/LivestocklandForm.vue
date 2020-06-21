@@ -121,7 +121,8 @@
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                    <v-list-item-title>{{ livestock.species + " " + livestock.gender }}</v-list-item-title>
+                    <v-list-item-title v-if="livestocks.maturity!=null">{{ livestock.species + livestocks.maturity + " " + " " + livestock.gender }}</v-list-item-title>
+                    <v-list-item-title v-else>{{ livestock.species + " " + livestock.gender }}</v-list-item-title>
                     <v-list-item-subtitle>{{"Jumlah : " + livestock.amount }}</v-list-item-subtitle>
                 </v-list-item-content>
 
@@ -244,6 +245,14 @@
               light
               ></v-select>
               <v-select
+              v-model="form2.maturity"
+              :rules="[rules.required]"
+              :items="maturities"
+              label="Usia"
+              outlined
+              light
+              ></v-select>
+              <v-select
               v-model="form2.gender"
               :rules="[rules.required]"
               :items="gender"
@@ -295,6 +304,7 @@ export default {
            amount : null,
            species : null,
            gender : null,
+           maturity : null,
         }, 
         disasterStatus : ["rendah","sedang","tinggi"],
         isFormValid: false, 
@@ -319,8 +329,9 @@ export default {
         mode: 'hexa',
         marker: false,
         types : ["Pertanian","Kebun","Peternakan","Lahan Kosong","Pekarangan","Lainnya"],
-        species : ["Ayam","Sapi","Bebek",'Kambing','Domba',"Lele","Lainnya"],
+        species : ["Ayam Potong","Ayam Petelur","Sapi Perah","Sapi Potong","Bebek Potong","Bebek Petelur",'Kambing','Domba',"Lele","Lainnya"],
         gender : ["Jantan","Betina"],
+        maturities : ["Muda","Dewasa"],
         rules: {
           required: value => !!value || 'Data is required',
           numberOnly: value => !isNaN(value) || 'Number Only',
@@ -403,7 +414,7 @@ export default {
           var object = this.form2
           for(var data in this.livestocks)
           {
-              if(this.livestocks[i].species==object.species && this.livestocks[i].gender==object.gender )
+              if(this.livestocks[i].species==object.species && this.livestocks[i].maturity==object.maturity && this.livestocks[i].gender==object.gender )
               {
                    this.snackbar = true;
                    this.text = "Data Sudah Diinputkan";
@@ -419,7 +430,7 @@ export default {
           var object = this.form2
           for(var data in this.livestocks)
           {
-              if(this.livestocks[i].species==object.species && this.livestocks[i].gender==object.gender )
+              if(this.livestocks[i].species==object.species && this.livestocks[i].maturity==object.maturity &&  this.livestocks[i].gender==object.gender )
               {
                    this.snackbar = true;
                    this.text = "Data Sudah Diinputkan";
@@ -432,6 +443,7 @@ export default {
           this.livestocks[index].amount=this.form2.amount
           this.livestocks[index].species=this.form2.species
           this.livestocks[index].gender=this.form2.gender
+          this.livestocks[index].maturity=this.form2.maturity
         }
 
         this.dialog2=false
