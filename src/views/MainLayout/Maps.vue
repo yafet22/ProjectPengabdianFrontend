@@ -29,6 +29,8 @@
         </gmap-info-window>
         <gmap-polygon v-for="(land) in lands" :key="land.id" :options="{ fillColor:land.fillColor,strokeColor:land.strokeColor,strokeWeight: 1 } " @click="toggleInfoWindow(land,land.id)" :clickable="true" :paths="land.polygon.data" :draggable="false" :editable="false">
         </gmap-polygon>
+        <gmap-polygon v-for="(house) in houses" :key="house.id+99" :options="optionsConstruction" :paths="house.polygon_building.data" :draggable="false" :editable="false">
+        </gmap-polygon>
         <gmap-polygon v-for="(house) in houses" :key="house.id" :options="{ fillColor:house.fillColor,strokeColor:house.strokeColor,strokeWeight: 1 } " @click="toggleInfoWindow(house,house.id)" :clickable="true" :paths="house.polygon.data" :draggable="false" :editable="false">
         </gmap-polygon>
         <gmap-polygon v-for="(data) in publics" :key="data.id" :options="{ fillColor:data.fillColor,strokeColor:data.strokeColor,strokeWeight: 1 } " @click="toggleInfoWindow(data,data.id)" :clickable="true" :paths="data.polygon.data" :draggable="false" :editable="false">
@@ -77,10 +79,12 @@ export default {
         publics:[],
         lands:[],
         houses:[],
+        constructionPaths:[],
         snackbar: false, 
         color: null,
         text: '',
         center: { lat:-7.779047, lng: 110.416957 },
+        optionsConstruction : {strokeColor: '#98963F',fillColor: '#98963F',strokeWeight: 1},
         inset: false, 
         infoContent: '',
         infoWindowPos: {
